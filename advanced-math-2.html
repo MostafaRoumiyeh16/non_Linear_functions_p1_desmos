@@ -1,0 +1,3347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Advanced Math Part 2</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  /* ── Core palette ── */
+  --white:        #ffffff;
+  --ink:          #111110;
+  --ink-2:        #2a2a28;
+  --ink-3:        #4a4a47;
+  --ink-4:        #7a7a76;
+  --ink-5:        #a8a8a3;
+  --ink-6:        #d4d4cf;
+  --ink-7:        #ebebea;
+  --ink-8:        #f5f5f4;
+
+  /* ── Single accent ── */
+  --accent:       #1a56db;
+  --accent-h:     #1344b0;
+  --accent-lt:    #f0f4ff;
+  --accent-bd:    #93b4f8;
+
+  /* ── Semantic ── */
+  --correct:      #166534;
+  --correct-bg:   #f0fdf4;
+  --correct-bd:   #86efac;
+  --danger:       #b91c1c;
+  --danger-bg:    #fff5f5;
+  --danger-bd:    #fca5a5;
+  --mark:         #5b21b6;
+  --mark-bg:      #f5f3ff;
+  --mark-bd:      #a78bfa;
+  --warn:         #92400e;
+  --warn-bg:      #fffbeb;
+  --warn-bd:      #fcd34d;
+
+  /* ── Header/Footer (dark chrome) ── */
+  --chrome:       #18181b;
+  --chrome-2:     #27272a;
+  --chrome-3:     #3f3f46;
+  --chrome-bd:    #52525b;
+  --chrome-txt:   #d4d4d8;
+  --chrome-dim:   #71717a;
+
+  /* ── Type ── */
+  --serif:        'Lora', 'KaTeX_Main', 'Georgia', 'Times New Roman', serif;
+  --sans:         'DM Sans', system-ui, -apple-system, sans-serif;
+  --math-font:    'KaTeX_Main', 'Lora', 'Latin Modern Roman', 'Georgia', serif;
+  --math-italic:  'KaTeX_Math', 'KaTeX_Main', 'Lora', 'Georgia', serif;
+
+  /* ── Spacing & geometry ── */
+  --radius-sm:    6px;
+  --radius:       10px;
+  --radius-lg:    14px;
+  --radius-xl:    20px;
+  --hdr-h:        52px;
+  --ftr-h:        60px;
+
+  /* ── Shadows ── */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:    0 4px 16px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.05);
+  --shadow-lg:    0 12px 40px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.06);
+  --shadow-xl:    0 24px 60px rgba(0,0,0,.14), 0 8px 24px rgba(0,0,0,.08);
+}
+
+.q-eq { font-family: var(--math-font); font-size: 1.08em; text-align: center; margin: 14px 0 18px; letter-spacing: .01em; }
+.q-eq em { font-family: var(--math-italic); font-style: italic; }
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.screen { display: none; }
+.screen.active { display: flex; }
+.hidden { display: none !important; }
+
+/* ── FRACTIONS ── */
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  transform: translateY(10%);
+  margin: 0 0.08em;
+  font-family: var(--math-font);
+  font-weight: 400;
+  text-rendering: geometricPrecision;
+  font-kerning: normal;
+  line-height: 1;
+}
+.frac .fnum,
+.frac .fden {
+  min-width: 1.2em;
+  padding: 0 0.18em;
+  text-align: center;
+  display: block;
+  font-size: .82em;
+  line-height: 1.25;
+}
+.frac .fnum {
+  border-bottom: 1.2px solid currentColor;
+  padding-bottom: 0.06em;
+}
+.frac .fden {
+  padding-top: 0.06em;
+}
+
+/* ══════════════════════════════════════════
+   START SCREEN
+══════════════════════════════════════════ */
+#screen-start {
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  padding: 40px 24px;
+}
+
+.start-card {
+  background: var(--white);
+  border: 1px solid var(--ink-6);
+  border-radius: var(--radius-xl);
+  padding: 56px 64px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+}
+
+.start-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+
+.start-badge svg {
+  width: 12px; height: 12px; opacity: .85;
+}
+
+.start-title {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -.01em;
+}
+
+.start-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+  color: var(--ink-4);
+  font-size: .83rem;
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+
+.start-meta-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--ink-5);
+}
+
+.start-divider {
+  width: 48px; height: 1px;
+  background: var(--ink-6);
+  margin: 0 auto 36px;
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.start-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.start-form label {
+  font-weight: 600;
+  font-size: .72rem;
+  color: var(--ink-3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.start-form input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--ink-6);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .95rem;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+.start-form input::placeholder { color: var(--ink-5); }
+.start-form input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+}
+.start-form input.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(185,28,28,.08);
+}
+
+#btn-start {
+  margin-top: 8px;
+  padding: 13px 24px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, transform .12s, box-shadow .15s;
+  letter-spacing: .01em;
+  box-shadow: 0 2px 8px rgba(26,86,219,.25);
+}
+#btn-start:hover {
+  background: var(--accent-h);
+  box-shadow: 0 4px 16px rgba(26,86,219,.3);
+}
+#btn-start:active { transform: scale(.98); }
+
+.start-note {
+  margin-top: 28px;
+  font-size: .75rem;
+  color: var(--ink-5);
+  line-height: 1.6;
+}
+
+.resume-banner {
+  margin-top: 16px;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-bd);
+  border-radius: var(--radius);
+  padding: 11px 16px;
+  font-size: .8rem;
+  color: var(--warn);
+  display: none;
+  text-align: left;
+  line-height: 1.55;
+}
+
+/* ══════════════════════════════════════════
+   EXAM SCREEN
+══════════════════════════════════════════ */
+#screen-exam {
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── TOP HEADER ── */
+.bb-hdr {
+  height: var(--hdr-h);
+  background: var(--chrome);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 200;
+  border-bottom: 1px solid var(--chrome-2);
+}
+.bb-hdr-left  { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.bb-hdr-ctr   { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.bb-hdr-right { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end; }
+
+.bb-sect-label {
+  color: var(--chrome-dim);
+  font-size: .76rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: .01em;
+}
+
+.bb-dir-btn {
+  background: transparent;
+  border: 1px solid var(--chrome-3);
+  border-radius: var(--radius-sm);
+  color: var(--chrome-txt);
+  font-size: .72rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: var(--sans);
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+  letter-spacing: .01em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bb-dir-btn:hover { background: var(--chrome-2); border-color: var(--chrome-bd); }
+
+/* Timer */
+.bb-timer-wrap { display: flex; align-items: center; gap: 6px; }
+.bb-timer-num {
+  background: var(--chrome-2);
+  border: 1px solid var(--chrome-3);
+  border-radius: var(--radius-sm);
+  padding: 5px 18px;
+  color: var(--chrome-txt);
+  font-size: .93rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 82px;
+  text-align: center;
+  letter-spacing: .08em;
+  transition: background .3s, border-color .3s, color .3s;
+}
+.bb-timer-num.warn {
+  background: rgba(146,64,14,.2);
+  border-color: #ca8a04;
+  color: #fde68a;
+}
+.bb-timer-num.crit {
+  background: rgba(185,28,28,.2);
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+.bb-timer-num.ghost { color: var(--chrome-3); letter-spacing: .1em; }
+.bb-timer-tog {
+  background: transparent;
+  border: none;
+  color: var(--chrome-dim);
+  font-size: .67rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  transition: color .15s, background .15s;
+  white-space: nowrap;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.bb-timer-tog:hover { color: var(--chrome-txt); background: var(--chrome-2); }
+
+/* Tool buttons */
+.bb-tool-btn {
+  background: transparent;
+  border: 1px solid var(--chrome-3);
+  border-radius: var(--radius-sm);
+  color: var(--chrome-txt);
+  font-size: .72rem;
+  font-weight: 500;
+  padding: 6px 13px;
+  cursor: pointer;
+  font-family: var(--sans);
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: .01em;
+}
+.bb-tool-btn:hover { background: var(--chrome-2); border-color: var(--chrome-bd); }
+.bb-tool-btn.active-tool {
+  background: rgba(26,86,219,.2);
+  border-color: rgba(93,148,248,.5);
+  color: #93b4f8;
+}
+
+.bb-calc-icon {
+  display: flex;
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+}
+
+.bb-submit-btn {
+  color: #fca5a5;
+  border-color: rgba(185,28,28,.4);
+  background: rgba(185,28,28,.12);
+}
+.bb-submit-btn:hover {
+  background: rgba(185,28,28,.22) !important;
+  border-color: rgba(220,38,38,.6);
+  color: #fecaca;
+}
+
+/* ── MAIN CONTENT (split pane) ── */
+.bb-main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  background: var(--ink-8);
+}
+
+/* ── CALCULATOR PANE ── */
+.calc-pane {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: min(560px, 48vw);
+  height: calc(100% - 20px);
+  min-width: 420px;
+  min-height: 420px;
+  max-width: calc(100% - 20px);
+  max-height: calc(100% - 20px);
+  background: var(--white);
+  border: 1px solid var(--chrome-3);
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.24), 0 3px 12px rgba(0,0,0,.14);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 120;
+}
+.calc-pane-hd {
+  position: relative;
+  background: var(--chrome);
+  color: #fff;
+  height: 52px;
+  padding: 0 10px 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 1px solid #303036;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.calc-pane-hd:active { cursor: grabbing; }
+.calc-mode-tabs {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border: 1px solid #73737b;
+  border-radius: 9px;
+  overflow: hidden;
+  background: #222226;
+}
+.calc-mode-btn {
+  height: 100%;
+  padding: 0 11px;
+  border: 0;
+  border-right: 1px solid #73737b;
+  background: transparent;
+  color: #f4f4f5;
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.calc-mode-btn:last-child { border-right: 0; }
+.calc-mode-btn.active {
+  background: #fff;
+  color: #18181b;
+}
+.calc-mode-btn svg { width: 16px; height: 16px; }
+.calc-drag-grip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  gap: 4px;
+  padding: 8px;
+  opacity: .95;
+  pointer-events: none;
+}
+.calc-drag-grip span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+.calc-pane-close {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  transition: background .15s;
+}
+.calc-pane-close:hover { background: #34343a; }
+.calc-pane-close svg { width: 24px; height: 24px; }
+.calc-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  z-index: 4;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 0 48%, rgba(24,24,27,.28) 49% 56%, transparent 57% 66%, rgba(24,24,27,.46) 67% 74%, transparent 75%);
+  touch-action: none;
+}
+#desmos-wrap { flex: 1; min-height: 0; height: 100%; overflow: hidden; }
+.desmos-embed {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.bb-main.calc-open .q-pane {
+  padding-left: calc(min(560px, 48vw) + 44px);
+}
+
+/* ── RESIZE DIVIDER ── */
+.pane-divider {
+  display: none !important;
+}
+
+/* ── QUESTION PANE ── */
+.q-pane {
+  flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 28px 52px;
+  background: var(--ink-8);
+  scroll-behavior: smooth;
+}
+.q-pane::-webkit-scrollbar { width: 6px; }
+.q-pane::-webkit-scrollbar-track { background: transparent; }
+.q-pane::-webkit-scrollbar-thumb { background: var(--ink-6); border-radius: 3px; }
+.q-pane::-webkit-scrollbar-thumb:hover { background: var(--ink-5); }
+
+/* ── QUESTION CARD ── */
+.bb-q-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--ink-7);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── META BAR ── */
+.bb-q-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--ink-7);
+  gap: 12px;
+}
+
+.bb-q-num-badge {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.bb-mark-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1.5px solid var(--ink-6);
+  border-radius: 100px;
+  padding: 4px 14px;
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--ink-4);
+  cursor: pointer;
+  font-family: var(--sans);
+  white-space: nowrap;
+  transition: all .15s;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.bb-mark-btn:hover { border-color: var(--mark-bd); color: var(--mark); background: var(--mark-bg); }
+.bb-mark-btn.marked { background: var(--mark-bg); border-color: var(--mark-bd); color: var(--mark); }
+
+.bb-mark-icon {
+  width: 10px; height: 10px; flex-shrink: 0;
+}
+
+/* ── QUESTION BODY ── */
+.bb-q-body { padding: 40px 48px 44px; }
+
+/* ── QUESTION TEXT ── */
+.question-content {
+  font-family: var(--sans);
+  font-size: 1.02rem;
+  line-height: 1.82;
+  color: var(--ink);
+  user-select: text;
+}
+
+.question-content .q-text {
+  font-family: var(--sans);
+}
+
+/* Math styling — LaTeX feel */
+.question-content .math-block,
+.question-content .math-inline,
+.question-content .frac,
+.question-content .frac *,
+.bb-ch-text,
+.bb-ch-text .frac,
+.bb-ch-text .frac *,
+.bb-open-input,
+.review-ans-value,
+.review-ans-value .frac,
+.review-ans-value .frac * {
+  font-family: var(--math-font);
+  font-weight: 400;
+  text-rendering: geometricPrecision;
+  font-kerning: normal;
+}
+
+.question-content .math-block {
+  display: block;
+  text-align: center;
+  margin: 28px 0 24px;
+  font-size: 1.22rem;
+  font-style: normal;
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1.6;
+  padding: 20px 0;
+  border-top: 1px solid var(--ink-7);
+  border-bottom: 1px solid var(--ink-7);
+}
+.question-content .math-block + .math-block {
+  border-top: none;
+  margin-top: -24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.question-content .math-block:has(+ .math-block) {
+  border-bottom: none;
+  padding-bottom: 8px;
+}
+
+.question-content em,
+.question-content .math-inline em,
+.bb-ch-text em,
+.q-table em,
+.review-ans-value em {
+  font-family: var(--math-italic);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.question-content .math-inline {
+  font-size: 1.03em;
+}
+
+.question-content .math-block .frac {
+  font-size: 1.05em;
+}
+
+.q-table {
+  border-collapse: collapse;
+  margin: 20px auto;
+  font-family: var(--sans);
+  font-size: .92rem;
+}
+.q-table th, .q-table td {
+  border: 1px solid var(--ink-6);
+  padding: 9px 32px;
+  text-align: center;
+}
+.q-table th {
+  background: var(--ink-8);
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.q-table em { font-family: var(--math-italic); font-size: 1.02em; }
+
+.q-divider { border: none; border-top: 1px solid var(--ink-7); margin: 8px 0 24px; }
+
+/* ── HIGHLIGHT SPANS ── */
+.hl-yellow { background: #fef08a; border-radius: 2px; padding: 1px 0; }
+.hl-blue   { background: #bae6fd; border-radius: 2px; padding: 1px 0; }
+.hl-pink   { background: #fbcfe8; border-radius: 2px; padding: 1px 0; }
+.hl-ul     { text-decoration: underline; text-decoration-color: #2563eb; text-decoration-thickness: 2px; }
+
+/* ── HIGHLIGHT TOOLBAR ── */
+#hl-toolbar {
+  position: fixed;
+  z-index: 9999;
+  background: var(--white);
+  border: 1px solid var(--ink-6);
+  border-radius: 100px;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .14s, transform .14s;
+}
+#hl-toolbar.visible { opacity: 1; transform: translateY(0); }
+
+.hl-swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .12s, box-shadow .12s;
+  flex-shrink: 0;
+}
+.hl-swatch:hover { transform: scale(1.2); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.hl-swatch.yellow { background: #fef08a; }
+.hl-swatch.blue   { background: #bae6fd; }
+.hl-swatch.pink   { background: #fbcfe8; }
+
+.hl-sep { width: 1px; height: 16px; background: var(--ink-6); flex-shrink: 0; }
+
+.hl-btn {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-6);
+  background: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--ink-3);
+  transition: background .12s, border-color .12s;
+  flex-shrink: 0;
+}
+.hl-btn:hover { background: var(--ink-8); border-color: var(--ink-5); }
+.hl-btn.ul-btn {
+  font-family: var(--math-font);
+  font-size: .86rem;
+  text-decoration: underline;
+  text-decoration-color: #2563eb;
+  text-decoration-thickness: 2px;
+}
+.hl-btn.del-btn { border-color: var(--danger-bd); color: var(--danger); }
+.hl-btn.del-btn:hover { background: var(--danger-bg); }
+
+/* ── MCQ CHOICES ── */
+.bb-choices { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }
+.bb-choice-row { display: flex; align-items: center; gap: 10px; }
+
+.bb-choice {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1.5px solid var(--ink-6);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  cursor: pointer;
+  background: var(--white);
+  min-height: 52px;
+}
+.bb-choice:hover:not(.xd) {
+  border-color: var(--ink-4);
+  box-shadow: 0 0 0 3px rgba(0,0,0,.04);
+}
+.bb-choice.sel {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+  background: var(--accent-lt);
+}
+.bb-choice.xd {
+  opacity: .35;
+  cursor: default;
+  pointer-events: none;
+}
+.bb-choice.xd .bb-ch-text {
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-3);
+  text-decoration-thickness: 1.5px;
+}
+
+.bb-ch-inner {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 13px 18px;
+  gap: 14px;
+  user-select: none;
+}
+
+/* Letter bubble */
+.bb-ch-letter {
+  width: 30px; height: 30px; min-width: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: .76rem;
+  color: var(--ink-3);
+  font-family: var(--sans);
+  transition: all .15s;
+  flex-shrink: 0;
+  background: var(--white);
+}
+.bb-choice.sel .bb-ch-letter {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Choice text */
+.bb-ch-text {
+  font-family: var(--math-font);
+  font-size: 1.02rem;
+  font-weight: 400;
+  color: var(--ink);
+  flex: 1;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.bb-ch-text em { font-style: italic; }
+
+/* ── EXTERNAL CROSS-OUT BUTTON ── */
+.bb-xbtn-ext {
+  width: 32px; height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-6);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--ink-5);
+  position: relative;
+  transition: border-color .13s, color .13s, background .13s;
+  overflow: visible;
+}
+.bb-xbtn-ext::before {
+  content: '';
+  position: absolute;
+  left: -3px; right: -3px;
+  top: 50%; transform: translateY(-50%);
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity .13s;
+}
+.bb-xbtn-ext:hover { border-color: var(--ink-4); color: var(--ink-3); background: var(--ink-8); }
+.bb-xbtn-ext.crossed { border-color: var(--ink-3); color: var(--ink-2); background: var(--ink-7); }
+.bb-xbtn-ext.crossed::before { opacity: 1; }
+.bb-xbtn-ext:focus { outline: none; }
+
+/* ── OPEN RESPONSE ── */
+.bb-open-wrap { margin-top: 32px; display: flex; flex-direction: column; gap: 8px; }
+.bb-open-label {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--ink-4);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.bb-open-input {
+  padding: 12px 16px;
+  border: 1.5px solid var(--ink-6);
+  border-radius: var(--radius);
+  font-family: var(--math-font);
+  font-size: 1.06rem;
+  color: var(--ink);
+  background: var(--white);
+  width: 100%;
+  max-width: 280px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  letter-spacing: 0;
+}
+.bb-open-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+}
+.bb-open-input::placeholder { color: var(--ink-5); font-family: var(--sans); font-size: .9rem; }
+
+/* ══════════════════════════════════════════
+   BOTTOM FOOTER
+══════════════════════════════════════════ */
+.bb-ftr {
+  height: var(--ftr-h);
+  background: var(--chrome);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  z-index: 200;
+  border-top: 1px solid var(--chrome-2);
+}
+.bb-ftr-left  { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.bb-ftr-ctr   { flex-shrink: 0; }
+.bb-ftr-right { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Logo area */
+.bb-logo-area {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--chrome-3);
+  background: rgba(255,255,255,.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color .15s, background .15s;
+}
+.bb-logo-area:hover { border-color: var(--chrome-bd); background: rgba(255,255,255,.07); }
+.bb-logo-area img { width: 100%; height: 100%; object-fit: contain; display: none; }
+.bb-logo-placeholder {
+  font-size: .42rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--chrome-3);
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.3;
+  pointer-events: none;
+}
+#logo-upload-input { display: none; }
+
+.bb-sname {
+  color: var(--chrome-dim);
+  font-size: .74rem;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bb-navctr-btn {
+  background: var(--chrome-2);
+  border: 1px solid var(--chrome-3);
+  border-radius: var(--radius-sm);
+  color: var(--chrome-txt);
+  font-size: .78rem;
+  font-weight: 500;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-family: var(--sans);
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+  letter-spacing: .01em;
+}
+.bb-navctr-btn:hover { background: var(--chrome-3); border-color: var(--chrome-bd); }
+
+.bb-btn-back {
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: 1.5px solid var(--chrome-3);
+  color: var(--chrome-txt);
+  white-space: nowrap;
+  transition: all .15s;
+  letter-spacing: .01em;
+}
+.bb-btn-back:hover:not(:disabled) { background: var(--chrome-2); border-color: var(--chrome-bd); }
+.bb-btn-back:disabled { opacity: .25; cursor: not-allowed; }
+
+.bb-btn-next {
+  padding: 8px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  white-space: nowrap;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  letter-spacing: .01em;
+  box-shadow: 0 1px 4px rgba(26,86,219,.3);
+}
+.bb-btn-next:hover { background: var(--accent-h); }
+.bb-btn-next:active { transform: scale(.97); }
+.bb-btn-next.last-q { background: #15803d; box-shadow: 0 1px 4px rgba(21,128,61,.3); }
+.bb-btn-next.last-q:hover { background: #166534; }
+
+/* ══════════════════════════════════════════
+   NAVIGATOR OVERLAY
+══════════════════════════════════════════ */
+#nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 600;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.bb-nav-panel {
+  background: var(--white);
+  border-radius: 16px 16px 0 0;
+  padding: 24px 24px 20px;
+  width: 100%;
+  max-width: 660px;
+  max-height: 62vh;
+  overflow-y: auto;
+  box-shadow: 0 -8px 32px rgba(0,0,0,.1);
+}
+.bb-nav-ph {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ink-7);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bb-nav-ph h3 {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.bb-nav-legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.bb-nav-li { display: flex; align-items: center; gap: 5px; font-size: .7rem; color: var(--ink-4); }
+.bb-nav-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.nd-ans  { background: var(--correct-bd); }
+.nd-cur  { background: var(--accent); }
+.nd-mark { background: var(--mark-bd); }
+.nd-none { background: var(--ink-5); }
+
+.bb-nav-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.bb-nav-q {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-6);
+  background: var(--white);
+  font-size: .76rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ink-3);
+  font-family: var(--sans);
+  transition: all .13s;
+}
+.bb-nav-q:hover { border-color: var(--accent); color: var(--accent); }
+.bb-nav-q.cur { background: var(--accent); border-color: var(--accent); color: #fff; }
+.bb-nav-q.ans { background: var(--correct-bg); border-color: var(--correct-bd); color: var(--correct); }
+.bb-nav-q.mrk { background: var(--mark-bg); border-color: var(--mark-bd); color: var(--mark); }
+
+.bb-nav-close {
+  width: 100%;
+  padding: 11px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+  letter-spacing: .01em;
+}
+.bb-nav-close:hover { background: var(--ink-2); }
+
+/* ══════════════════════════════════════════
+   DIRECTIONS MODAL
+══════════════════════════════════════════ */
+#dir-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.48);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.bb-dir-panel {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 640px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+}
+.bb-dir-hd {
+  padding: 22px 32px 18px;
+  border-bottom: 1px solid var(--ink-7);
+}
+.bb-dir-hd h2 {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.bb-dir-body {
+  padding: 22px 32px;
+  overflow-y: auto;
+  flex: 1;
+  font-family: var(--sans);
+  font-size: .93rem;
+  line-height: 1.78;
+  color: var(--ink-2);
+}
+.bb-dir-body p { margin-bottom: 14px; }
+.bb-dir-body ul { margin: 6px 0 14px 22px; }
+.bb-dir-body li { margin-bottom: 6px; }
+.bb-dir-body strong { font-weight: 600; color: var(--ink); }
+.bb-dir-ft {
+  padding: 18px 32px;
+  border-top: 1px solid var(--ink-7);
+  display: flex;
+  justify-content: flex-end;
+}
+.bb-dir-close {
+  padding: 10px 28px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+  letter-spacing: .01em;
+}
+.bb-dir-close:hover { background: var(--accent-h); }
+
+/* ══════════════════════════════════════════
+   SUBMIT CONFIRM MODAL
+══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+}
+.modal-box h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.modal-box p {
+  color: var(--ink-3);
+  line-height: 1.68;
+  margin-bottom: 32px;
+  font-size: .93rem;
+}
+.modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-modal-cancel {
+  padding: 10px 20px;
+  border: 1.5px solid var(--ink-6);
+  background: var(--white);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  color: var(--ink-2);
+}
+.btn-modal-cancel:hover { background: var(--ink-8); border-color: var(--ink-5); }
+.btn-modal-confirm {
+  padding: 10px 22px;
+  border: none;
+  background: var(--danger);
+  color: #fff;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-modal-confirm:hover { background: #991b1b; }
+
+/* ══════════════════════════════════════════
+   SUBMITTED SCREEN
+══════════════════════════════════════════ */
+#screen-submitted {
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  padding: 40px 24px;
+}
+
+.submitted-card {
+  background: var(--white);
+  border: 1px solid var(--ink-7);
+  border-radius: var(--radius-xl);
+  padding: 56px 64px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submitted-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--correct-bg);
+  border: 2px solid var(--correct-bd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+}
+
+.submitted-icon svg {
+  width: 22px; height: 22px;
+  color: var(--correct);
+}
+
+.submitted-card h2 {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.submitted-card > p {
+  color: var(--ink-4);
+  font-size: .93rem;
+  line-height: 1.68;
+  max-width: 320px;
+}
+
+.submitted-small {
+  margin-top: 14px;
+  font-size: .78rem !important;
+  color: var(--ink-5) !important;
+}
+
+.score-box {
+  margin: 28px auto 0;
+  border: 1.5px solid var(--accent-bd);
+  border-radius: var(--radius-lg);
+  padding: 24px 36px;
+  display: inline-block;
+  min-width: 240px;
+  background: var(--accent-lt);
+}
+.score-box .score-num {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.score-box .score-label {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 6px;
+  opacity: .75;
+}
+.score-box .score-pct {
+  font-size: .93rem;
+  color: var(--ink-4);
+  margin-top: 6px;
+}
+
+.btn-review {
+  margin-top: 24px;
+  padding: 12px 28px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+  letter-spacing: .01em;
+}
+.btn-review:hover { background: var(--ink-2); }
+
+.email-status {
+  margin-top: 14px;
+  font-size: .8rem;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  display: none;
+}
+.email-status.sending { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-bd); display: block; }
+.email-status.sent    { background: var(--correct-bg); color: var(--correct); border: 1px solid var(--correct-bd); display: block; }
+.email-status.failed  { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-bd); display: block; }
+
+/* ══════════════════════════════════════════
+   REVIEW SCREEN
+══════════════════════════════════════════ */
+#screen-review {
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--ink-8);
+}
+
+.review-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--ink-7);
+  padding: 18px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  gap: 14px;
+}
+
+.review-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.review-header-eyebrow {
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.review-header h2 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.review-score-pill {
+  background: var(--accent-lt);
+  border: 1.5px solid var(--accent-bd);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: .88rem;
+  padding: 6px 20px;
+  border-radius: 100px;
+  white-space: nowrap;
+  font-family: var(--sans);
+}
+
+.review-back-btn {
+  padding: 8px 16px;
+  font-size: .8rem;
+  border: 1.5px solid var(--ink-6);
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-weight: 500;
+  color: var(--ink-3);
+  transition: background .15s, border-color .15s;
+}
+.review-back-btn:hover { background: var(--ink-8); border-color: var(--ink-5); }
+
+.review-body {
+  max-width: 840px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 32px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--ink-7);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 22px;
+  border-bottom: 1px solid var(--ink-7);
+  background: var(--ink-8);
+}
+
+.review-q-num {
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.review-badge {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 100px;
+  margin-left: auto;
+  letter-spacing: .03em;
+}
+.review-badge.correct { background: var(--correct-bg); color: var(--correct); border: 1px solid var(--correct-bd); }
+.review-badge.wrong   { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-bd); }
+.review-badge.skipped { background: var(--ink-8); color: var(--ink-4); border: 1px solid var(--ink-6); }
+
+.review-card-body {
+  padding: 22px 26px;
+  font-family: var(--sans);
+  font-size: .96rem;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.review-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: .88rem;
+}
+
+.review-answer-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: var(--radius);
+}
+.review-answer-row.student-correct { background: var(--correct-bg); border: 1px solid var(--correct-bd); }
+.review-answer-row.student-wrong   { background: var(--danger-bg); border: 1px solid var(--danger-bd); }
+.review-answer-row.correct-ans     { background: var(--accent-lt); border: 1px solid var(--accent-bd); }
+.review-answer-row.skipped-row     { background: var(--ink-8); border: 1px solid var(--ink-6); }
+
+.review-ans-icon  { font-size: .92rem; flex-shrink: 0; margin-top: 1px; }
+.review-ans-label { font-weight: 600; flex-shrink: 0; color: var(--ink-2); }
+.review-ans-value { font-family: var(--math-font); }
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — TABLET  (≤ 1024px)
+════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .start-card { padding: 44px 44px; }
+  .bb-q-body { padding: 32px 36px 36px; }
+  .bb-q-meta { padding: 12px 22px; }
+  .q-pane { padding: 28px 20px 40px; }
+  .submitted-card { padding: 44px 44px; }
+  .review-header { padding: 16px 28px; }
+  .review-body { padding: 24px 20px 40px; }
+  .review-card-body { padding: 18px 22px; }
+  .bb-dir-hd { padding: 18px 24px 14px; }
+  .bb-dir-body { padding: 18px 24px; }
+  .bb-dir-ft { padding: 14px 24px; }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — MOBILE  (≤ 700px)
+════════════════════════════════════════════ */
+@media (max-width: 700px) {
+
+  /* Start screen */
+  #screen-start { padding: 20px 16px; align-items: flex-start; padding-top: 40px; }
+  .start-card { padding: 28px 20px 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+  .start-badge { margin-bottom: 18px; }
+  .start-title { font-size: 1.45rem; }
+  .start-meta { flex-wrap: wrap; gap: 8px 10px; margin-bottom: 24px; font-size: .78rem; }
+  .start-divider { margin-bottom: 20px; }
+  .start-form { gap: 12px; }
+  .start-form input { font-size: .9rem; padding: 11px 14px; }
+  #btn-start { padding: 13px; font-size: .9rem; }
+  .start-note { margin-top: 18px; }
+
+  /* Exam header */
+  .bb-hdr { padding: 0 12px; gap: 6px; height: 48px; }
+  .bb-sect-label { display: none; }
+  .btn-label { display: none; }
+  .bb-dir-btn { padding: 5px 10px; }
+  .bb-timer-num { min-width: 70px; padding: 5px 12px; font-size: .86rem; }
+  .bb-tool-btn { padding: 6px 10px; }
+
+  /* Calculator docks above the question on mobile */
+  .bb-main { flex-direction: column; }
+  .calc-pane {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 48vh !important;
+    min-width: 0;
+    min-height: 320px;
+    max-width: none;
+    max-height: none;
+    border: 0;
+    border-bottom: 1px solid var(--ink-7);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .calc-pane-hd { cursor: default; }
+  .calc-resize-handle { display: none; }
+  .bb-main.calc-open .q-pane { padding-left: 10px; }
+  .pane-divider { display: none !important; }
+
+  /* Question pane */
+  .q-pane { padding: 12px 10px 28px; }
+  .bb-q-card { border-radius: var(--radius); }
+  .bb-q-meta { padding: 10px 16px; }
+  .bb-q-num-badge { font-size: .65rem; }
+  .bb-mark-btn { padding: 5px 10px; font-size: .65rem; }
+  .bb-q-body { padding: 20px 18px 24px; }
+  .question-content { font-size: .97rem; line-height: 1.72; }
+  .question-content .math-block { font-size: 1.05rem; padding: 14px 0; margin: 18px 0 16px; }
+
+  /* MCQ choices */
+  .bb-choices { gap: 8px; margin-top: 24px; }
+  .bb-ch-inner { padding: 12px 14px; gap: 12px; }
+  .bb-ch-letter { width: 28px; height: 28px; min-width: 28px; font-size: .72rem; }
+  .bb-ch-text { font-size: .96rem; }
+  .bb-xbtn-ext { width: 40px; height: 40px; font-size: .7rem; }
+  .bb-choice { min-height: 48px; }
+  .bb-choice-row { gap: 8px; }
+
+  /* Open input */
+  .bb-open-wrap { margin-top: 24px; }
+  .bb-open-input { max-width: 100%; font-size: 1rem; }
+
+  /* Table */
+  .q-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .q-table th, .q-table td { padding: 8px 18px; }
+
+  /* Footer */
+  .bb-ftr { padding: 0 12px; gap: 6px; height: 54px; }
+  .bb-ftr-left { flex: none; }
+  .bb-sname { display: none; }
+  .bb-ftr-ctr { flex: 1; }
+  .bb-navctr-btn { padding: 7px 14px; font-size: .74rem; }
+  .bb-btn-back { padding: 8px 14px; font-size: .76rem; }
+  .bb-btn-next { padding: 8px 16px; font-size: .76rem; }
+
+  /* Navigator */
+  .bb-nav-panel { padding: 20px 16px 16px; max-height: 70vh; }
+  .bb-nav-palette { grid-template-columns: repeat(6, 1fr); gap: 7px; }
+  .bb-nav-q { font-size: .72rem; }
+  .bb-nav-legend { gap: 10px; }
+
+  /* Directions modal slides up from bottom on mobile */
+  #dir-overlay { padding: 0; align-items: flex-end; }
+  .bb-dir-panel { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 85vh; }
+  .bb-dir-hd { padding: 16px 20px 12px; }
+  .bb-dir-hd h2 { font-size: 1.05rem; }
+  .bb-dir-body { padding: 14px 20px; font-size: .88rem; line-height: 1.65; }
+  .bb-dir-ft { padding: 12px 20px; }
+
+  /* Submit modal */
+  .modal-box { padding: 28px 22px; width: 95%; }
+  .modal-box h3 { font-size: 1.1rem; }
+  .modal-box p { margin-bottom: 20px; }
+  .modal-buttons { flex-direction: column-reverse; gap: 8px; }
+  .btn-modal-cancel, .btn-modal-confirm { width: 100%; text-align: center; padding: 12px; }
+
+  /* Submitted screen */
+  #screen-submitted { padding: 32px 16px; align-items: center; }
+  .submitted-card { padding: 28px 20px 24px; border-radius: var(--radius-lg); }
+  .submitted-card h2 { font-size: 1.4rem; }
+  .score-box { min-width: unset; width: 100%; padding: 18px 20px; }
+  .score-box .score-num { font-size: 2rem; }
+  .btn-review { width: 100%; text-align: center; padding: 13px; }
+
+  /* Review screen */
+  #screen-review { overflow-y: auto; }
+  .review-header { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+  .review-header h2 { font-size: .92rem; }
+  .review-header-eyebrow { font-size: .62rem; }
+  .review-score-pill { font-size: .78rem; padding: 5px 12px; }
+  .review-back-btn { padding: 7px 12px; font-size: .74rem; }
+  .review-body { padding: 12px 10px 32px; gap: 10px; }
+  .review-card-header { padding: 10px 14px; }
+  .review-card-body { padding: 14px 14px; font-size: .88rem; line-height: 1.65; }
+  .review-answer-row { padding: 8px 10px; font-size: .82rem; }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — SMALL PHONE  (≤ 380px)
+════════════════════════════════════════════ */
+@media (max-width: 380px) {
+  .start-title { font-size: 1.28rem; }
+  .bb-timer-num { min-width: 62px; padding: 4px 10px; font-size: .8rem; letter-spacing: .04em; }
+  .bb-navctr-btn { padding: 6px 10px; font-size: .7rem; }
+  .bb-btn-back { padding: 7px 10px; font-size: .72rem; }
+  .bb-btn-next { padding: 7px 12px; font-size: .72rem; }
+  .bb-q-body { padding: 16px 14px 20px; }
+  .bb-ch-inner { padding: 10px 12px; gap: 10px; }
+  .bb-nav-palette { grid-template-columns: repeat(5, 1fr); }
+  .score-box .score-num { font-size: 1.8rem; }
+}
+
+/* ══════════════════════════════════════════
+   REFERENCE SHEET OVERLAY
+══════════════════════════════════════════ */
+#ref-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.48);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.ref-panel {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  max-width: 820px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+.ref-hd {
+  padding: 18px 32px 14px;
+  border-bottom: 1px solid var(--ink-7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.ref-hd h2 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.ref-close {
+  padding: 7px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.ref-close:hover { background: var(--accent-h); }
+
+.ref-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 28px 32px 32px;
+}
+
+/* Two-column wrapping grid — each figure is a cell */
+.ref-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 20px;
+  margin-bottom: 24px;
+}
+
+.ref-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.ref-figure-wide {
+  grid-column: span 2;
+}
+
+/* Formulas below each shape — match SAT serif style */
+.ref-eq {
+  font-family: var(--math-font);
+  font-size: 1.06rem;
+  color: var(--ink);
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+.ref-eq em {
+  font-family: var(--math-italic);
+  font-style: italic;
+}
+.ref-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  transform: translateY(10%);
+  margin: 0 0.05em;
+  line-height: 1;
+  font-family: var(--math-font);
+}
+.ref-frac .rn {
+  border-bottom: 1.1px solid currentColor;
+  padding: 0 0.15em 0.05em;
+  font-size: .82em;
+  min-width: 0.8em;
+  text-align: center;
+  display: block;
+}
+.ref-frac .rd {
+  padding: 0.05em 0.15em 0;
+  font-size: .82em;
+  min-width: 0.8em;
+  text-align: center;
+  display: block;
+}
+
+.ref-divider {
+  border: none;
+  border-top: 1px solid var(--ink-6);
+  margin: 4px 0 20px;
+}
+
+.ref-laws {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ref-law {
+  font-family: var(--sans);
+  font-size: .92rem;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.ref-special-triangles {
+  display: flex;
+  gap: 40px;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+.ref-tri-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Center formula under each figure */
+.ref-figure {
+  align-items: center;
+}
+.ref-figure.ref-figure-wide {
+  align-items: flex-start;
+}
+
+@media (max-width: 700px) {
+  #ref-overlay { padding: 0; align-items: flex-end; }
+  .ref-panel { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 88vh; }
+  .ref-hd { padding: 14px 20px 12px; }
+  .ref-body { padding: 18px 16px 24px; }
+  .ref-cols { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+  .ref-eq { font-size: .95rem; }
+  .ref-figure-wide { grid-column: span 2; }
+}
+@media (max-width: 400px) {
+  .ref-cols { grid-template-columns: 1fr 1fr; gap: 14px 8px; }
+  .ref-eq { font-size: .88rem; }
+}
+
+
+/* ══════════════════════════════════════════
+   TIME WARNING MODAL
+══════════════════════════════════════════ */
+#time-warning-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 998;
+}
+.time-warning-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+}
+.time-warning-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--warn-bg);
+  border: 2px solid var(--warn-bd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+.time-warning-icon svg {
+  width: 22px; height: 22px;
+  color: var(--warn);
+}
+.time-warning-box h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.time-warning-box p {
+  font-size: .9rem;
+  color: var(--ink-3);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.btn-warning-ok {
+  padding: 10px 32px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-warning-ok:hover { background: var(--accent-h); }
+
+.dir-ex-title { text-align:center; font-weight:600; margin:18px 0 8px; }
+.dir-ex-wrap { overflow-x:auto; margin-bottom:8px; }
+.dir-ex { border-collapse:collapse; margin:0 auto; font-size:.9em; }
+.dir-ex th, .dir-ex td { border:1px solid var(--ink-5); padding:10px 16px; text-align:center; vertical-align:middle; }
+.dir-ex th { font-weight:500; background:var(--ink-8); }
+.dir-ex td code { display:table; margin:6px auto; padding:2px 6px; background:var(--ink-7); border-radius:4px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.92em; white-space:pre; }
+.dir-ex-ans { font-family:var(--math-font); font-size:1.1em; }
+
+/* ══════════════════════════════════════════
+   BLUEBOOK THEME
+══════════════════════════════════════════ */
+:root{
+  --sans:'Noto Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --serif:'Noto Serif', Georgia, 'Times New Roman', serif;
+  --bb-text:#1e1e1e;
+  --bb-chrome:#e6edf8;
+  --bb-navy:#1b2461;
+  --bb-blue:#3451c6;
+  --bb-blue-h:#2a42a8;
+  --bb-gray:#f0f0f0;
+  --bb-dash:repeating-linear-gradient(90deg,#2d2d2d 0 22px,transparent 22px 25px);
+  --hdr-h:66px; --ftr-h:62px;
+}
+#screen-exam{background:#fff;color:var(--bb-text);font-family:var(--sans);}
+#screen-exam .bb-hdr{background:var(--bb-chrome);border-bottom:none;position:relative;padding:0 30px;}
+#screen-exam .bb-hdr::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--bb-dash);}
+#screen-exam .bb-ftr{background:var(--bb-chrome);border-top:none;position:relative;padding:0 30px;}
+#screen-exam .bb-ftr::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:var(--bb-dash);}
+.bb-hdr-left{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;}
+.bb-sect-label{font-family:var(--sans);font-size:17px;font-weight:500;color:var(--bb-text);text-transform:none;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.bb-dir-btn{background:transparent;border:none;padding:0;color:var(--bb-text);font-family:var(--sans);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;height:auto;}
+.bb-dir-btn:hover{background:transparent;text-decoration:underline;}
+.bb-timer-wrap{flex-direction:column;gap:2px;}
+.bb-timer-num{background:transparent;border:none;color:var(--bb-text);font-family:var(--sans);font-size:20px;font-weight:500;padding:0;letter-spacing:0;box-shadow:none;min-width:0;}
+.bb-timer-num.warn,.bb-timer-num.crit{background:transparent;color:#b3261e;border:none;}
+.bb-timer-num.ghost{color:var(--bb-text);letter-spacing:.05em;}
+.bb-timer-tog{background:transparent;border:1px solid var(--bb-text);border-radius:100px;color:var(--bb-text);font-family:var(--sans);font-size:11px;font-weight:600;padding:1px 12px;text-transform:none;letter-spacing:0;}
+.bb-timer-tog:hover{background:#d7e0f1;color:var(--bb-text);}
+.bb-hdr-right{gap:18px;}
+.bb-tool-btn{flex-direction:column;gap:3px;background:transparent;border:none;border-radius:0;padding:4px 2px;color:var(--bb-text);font-family:var(--sans);font-size:11px;font-weight:500;text-transform:none;letter-spacing:0;height:auto;box-shadow:none;}
+.bb-tool-btn svg{width:18px;height:18px;}
+.bb-tool-btn:hover{background:transparent;border:none;text-decoration:underline;}
+.bb-tool-btn.active-tool{background:transparent;border:none;color:var(--bb-blue);box-shadow:inset 0 -2px 0 var(--bb-blue);}
+.bb-submit-btn,.bb-submit-btn:hover{background:transparent;border:none;color:var(--bb-text);}
+.bb-practice-banner{flex-shrink:0;margin:0 30px;background:var(--bb-navy);color:#fff;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.02em;text-align:center;padding:5px 0 6px;border-radius:0 0 12px 12px;}
+#screen-exam .bb-main,#screen-exam .q-pane{background:#fff;}
+#screen-exam .q-pane{padding:28px 28px 48px;}
+.bb-q-card{background:transparent;border:none;border-radius:0;box-shadow:none;max-width:660px;}
+.bb-q-meta{position:relative;background:var(--bb-gray);border-bottom:none;padding:0 8px 0 0;gap:0;justify-content:flex-start;height:30px;}
+.bb-q-meta::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:2px;background:var(--bb-dash);}
+.bb-q-num-badge{background:var(--bb-text);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:0;text-transform:none;min-width:30px;height:30px;padding:0 8px;display:flex;align-items:center;justify-content:center;}
+.bb-mark-btn,.bb-mark-btn:hover,.bb-mark-btn.marked{background:transparent;border:none;border-radius:0;color:var(--bb-text);font-family:var(--sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;padding:0 10px;height:30px;}
+.bb-mark-btn:hover{text-decoration:underline;}
+.bb-mark-icon{width:14px;height:14px;}
+.bb-mark-btn.marked .bb-mark-icon{color:#c8102e;}
+.bb-abc-btn{margin-left:auto;display:flex;align-items:center;justify-content:center;height:22px;padding:0 4px;border:1.5px solid var(--bb-text);border-radius:4px;background:transparent;color:var(--bb-text);cursor:pointer;font-family:var(--sans);font-size:9px;font-weight:700;}
+.bb-abc-btn span{text-decoration:line-through;text-decoration-thickness:1.5px;}
+.bb-abc-btn.active{background:var(--bb-blue);border-color:var(--bb-blue);color:#fff;}
+#screen-exam.xo-off .bb-xbtn-ext:not(.crossed){visibility:hidden;}
+.bb-q-body{padding:22px 0 40px;}
+.question-content,.question-content .q-text{font-family:var(--serif);font-size:16px;line-height:1.65;color:var(--bb-text);}
+.bb-choices{gap:12px;margin-top:22px;}
+.bb-choice-row{gap:14px;}
+.bb-choice{position:relative;overflow:visible;border:1px solid var(--bb-text);border-radius:8px;min-height:38px;background:#fff;box-shadow:none;}
+.bb-choice:hover:not(.xd){border-color:var(--bb-text);box-shadow:0 0 0 1px var(--bb-text);}
+.bb-choice.sel,.bb-choice.sel:hover{border-color:var(--bb-blue);box-shadow:0 0 0 2px var(--bb-blue);background:#fff;}
+.bb-choice.xd{opacity:.55;}
+.bb-choice.xd::after{content:'';position:absolute;left:-7px;right:-7px;top:50%;height:2px;background:var(--bb-text);}
+.bb-choice.xd .bb-ch-text{text-decoration:none;}
+.bb-ch-inner{padding:6px 14px 6px 12px;gap:16px;}
+.bb-ch-letter{width:22px;height:22px;min-width:22px;border:1.5px solid var(--bb-text);color:var(--bb-text);font-family:var(--sans);font-size:12px;font-weight:600;background:#fff;}
+.bb-choice.sel .bb-ch-letter{background:var(--bb-blue);border-color:var(--bb-blue);color:#fff;}
+.bb-ch-text{font-family:var(--serif);font-size:16px;color:var(--bb-text);}
+.bb-xbtn-ext{width:22px;height:22px;margin:0 9px;border:1.5px solid var(--bb-text);color:var(--bb-text);background:transparent;font-family:var(--sans);font-size:11px;font-weight:700;}
+.bb-xbtn-ext::before{opacity:1;left:-5px;right:-5px;height:1.5px;}
+.bb-xbtn-ext:hover{background:var(--bb-gray);border-color:var(--bb-text);color:var(--bb-text);}
+.bb-xbtn-ext.crossed,.bb-xbtn-ext.crossed:hover{width:40px;margin:0;border:none;background:transparent;font-size:0;border-radius:0;}
+.bb-xbtn-ext.crossed::before{display:none;}
+.bb-xbtn-ext.crossed::after{content:'Undo';font-size:13px;font-weight:600;color:var(--bb-text);text-decoration:underline;}
+.bb-open-wrap{margin-top:24px;}
+.bb-open-label{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--bb-text);text-transform:none;letter-spacing:0;}
+.bb-open-input{border:1px solid var(--bb-text);border-radius:8px;font-family:var(--serif);font-size:17px;max-width:220px;color:var(--bb-text);}
+.bb-open-input:focus{border-color:var(--bb-blue);box-shadow:0 0 0 2px var(--bb-blue);}
+.bb-sname{font-family:var(--sans);font-size:16px;font-weight:600;color:var(--bb-text);}
+.bb-navctr-btn{background:var(--bb-text);border:none;color:#fff;border-radius:6px;font-family:var(--sans);font-size:13px;font-weight:700;padding:7px 14px;letter-spacing:0;text-transform:none;}
+.bb-navctr-btn:hover{background:#000;border:none;}
+.bb-btn-back,.bb-btn-next,.bb-btn-next.last-q{background:var(--bb-blue);border:none;color:#fff;border-radius:100px;font-family:var(--sans);font-size:14px;font-weight:600;padding:9px 26px;box-shadow:none;text-transform:none;letter-spacing:0;height:auto;}
+.bb-btn-back:hover:not(:disabled),.bb-btn-next:hover,.bb-btn-next.last-q:hover{background:var(--bb-blue-h);border:none;}
+.bb-btn-back:disabled{visibility:hidden;}
+#screen-exam .bb-logo-area{border-color:#9aa6bd;background:transparent;}
+#screen-exam .bb-logo-placeholder{color:#6b7790;}
+@media (max-width:700px){
+  #screen-exam .bb-hdr,#screen-exam .bb-ftr{padding:0 12px;}
+  .bb-sect-label{font-size:14px;}
+  .bb-timer-num{font-size:17px;}
+  .bb-timer-tog{font-size:10px;padding:0 10px;}
+  #screen-exam .bb-hdr{height:70px;}
+  .bb-hdr-right{gap:10px;}
+  .bb-practice-banner{margin:0 12px;}
+  #screen-exam .q-pane{padding:20px 14px 40px;}
+  .bb-btn-back,.bb-btn-next,.bb-btn-next.last-q{padding:8px 18px;}
+}
+
+/* Bluebook header icons */
+.bb-tool-btn .bb-ico{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.bb-ref-ico{font-family:var(--serif);font-weight:700;font-size:17px;line-height:1;color:var(--bb-text);}
+.bb-ref-ico i{font-style:italic;}
+.bb-ref-ico sup{font-size:10px;font-style:normal;margin-left:1px;transform:translateY(-3px);}
+.bb-hdr-right{gap:14px;}
+.bb-tool-btn{min-width:54px;}
+.bb-more-wrap{position:relative;}
+.bb-more-menu{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #c9ced8;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);min-width:190px;padding:6px 0;z-index:400;display:flex;flex-direction:column;}
+.bb-more-menu.hidden{display:none;}
+.bb-more-menu button{background:transparent;border:0;text-align:left;padding:10px 16px;font-family:var(--sans);font-size:14px;color:var(--bb-text);cursor:pointer;}
+.bb-more-menu button:hover{background:var(--bb-chrome);}
+.bb-more-menu .bb-more-submit{border-top:1px solid #e3e6ec;margin-top:4px;font-weight:600;color:var(--bb-blue);}
+/* Calculator resize icon (bottom-right) */
+.calc-pane{overflow:visible;}
+.calc-pane-hd{border-radius:7px 7px 0 0;}
+#desmos-wrap{border-radius:0 0 7px 7px;}
+.calc-resize-handle{right:-15px;bottom:-12px;width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid #9a9a9a;box-shadow:0 1px 3px rgba(0,0,0,.18);color:#111;display:flex;align-items:center;justify-content:center;z-index:130;}
+.calc-resize-handle svg{width:17px;height:17px;pointer-events:none;}
+.calc-resize-handle:hover{background:#f0f0f0;}
+@media (max-width:700px){ .bb-tool-btn{min-width:0;} .bb-hdr-right{gap:8px;} .calc-resize-handle{display:none;} }
+.masked-input{-webkit-text-security:disc;text-security:disc;}
+
+/* Floating calculator: can move over the footer and past the left/right edges */
+@media (min-width:701px){
+  .calc-pane{position:fixed;max-width:none;max-height:none;min-width:360px;min-height:360px;z-index:250;}
+  #screen-exam .bb-hdr{z-index:300;}
+}
+#screen-exam .q-pane{transition:padding .18s ease;}
+
+/* Open response: Bluebook look */
+.bb-open-wrap{margin-top:26px;gap:0;align-items:flex-start;}
+.bb-open-box{width:120px;border:1px solid var(--bb-text);border-radius:8px;padding:10px 12px 12px;background:#fff;transition:box-shadow .15s,border-color .15s;}
+.bb-open-box:focus-within{border-color:var(--bb-blue);box-shadow:0 0 0 1px var(--bb-blue);}
+.bb-open-box .bb-open-input,.bb-open-box .bb-open-input:focus{width:100%;max-width:none;border:0;border-bottom:1px solid var(--bb-blue);border-radius:0;box-shadow:none;padding:4px 2px 5px;font-family:ui-monospace,'Roboto Mono','Courier New',monospace;font-size:20px;letter-spacing:.06em;color:var(--bb-text);background:transparent;outline:none;}
+.bb-ans-preview{margin-top:44px;font-family:var(--serif);font-weight:700;font-size:22px;color:var(--bb-text);display:flex;align-items:center;gap:8px;min-height:40px;}
+.bb-ans-preview-val{font-weight:400;font-size:24px;}
+.bb-ans-preview-val .katex{font-size:1em;}
+
+/* Narrow calculator: icon-only tabs so they never run into the drag dots */
+.calc-pane{container-type:inline-size;container-name:calc;}
+@container calc (max-width: 540px){
+  .calc-pane-hd{padding:0 8px 0 10px;}
+  .calc-mode-tabs{height:32px;border-radius:7px;}
+  .calc-mode-btn{padding:0 9px;gap:0;}
+  .calc-mode-btn svg{width:17px;height:17px;}
+  .calc-mode-txt{display:none;}
+}
+
+#screen-exam .question-content,#screen-exam .bb-choices{-webkit-touch-callout:none;}
+
+.btn-reattempt{display:block;margin:10px auto 0;padding:12px 28px;border-radius:var(--radius);border:1.5px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--sans);font-size:.92rem;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-reattempt:hover{background:var(--ink-8);}
+
+/* Algebra: graphs, tables, roman-numeral lists */
+.q-graph{display:block;width:340px;max-width:100%;height:auto;margin:14px auto;}
+.q-tbl{border-collapse:collapse;margin:12px auto;font-family:var(--serif);font-size:16px;}
+.q-tbl th,.q-tbl td{border:1px solid var(--bb-text);padding:5px 18px;text-align:center;min-width:48px;}
+.q-tbl th{font-weight:400;}
+.q-tbl-h th{font-family:var(--sans);font-weight:600;font-size:14px;}
+.q-tbl-h td{font-family:var(--serif);}
+.bb-ch-text .q-tbl{margin:4px 0;}
+.q-roman{margin:10px 0 4px 18px;font-family:var(--serif);font-size:16px;line-height:2;}
+.q-roman-n{display:inline-block;min-width:30px;}
+
+.bb-fig{width:min(100%,430px);margin:14px auto;border:1px solid #c9ccd3;border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.bb-fig-bar{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;background:#f6f7f9;border-bottom:1px solid #e1e4e9;user-select:none;-webkit-user-select:none;font-family:var(--sans);flex-shrink:0;}
+.bb-fig-btn{width:30px;height:30px;border:0;background:transparent;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--bb-text);cursor:pointer;padding:0;}
+.bb-fig-btn svg{width:19px;height:19px;}
+.bb-fig-btn:hover,.bb-fig-reset:hover{background:#e6e9ef;}
+.bb-fig-btn:disabled{opacity:.35;cursor:default;background:transparent;}
+.bb-fig-pct{min-width:44px;text-align:center;font-size:14px;color:var(--bb-text);}
+.bb-fig-reset{border:0;background:transparent;font-family:var(--sans);font-size:15px;color:var(--bb-text);padding:4px 8px;border-radius:6px;cursor:pointer;}
+.bb-fig-sep{width:1px;height:20px;background:#c9ccd3;margin:0 4px;}
+.bb-fig-view{overflow:hidden;text-align:center;padding:10px;cursor:default;line-height:0;}
+.bb-fig.zoomed .bb-fig-view{overflow:auto;}
+.bb-fig.zoomed .bb-fig-view{cursor:grab;}
+.bb-fig.zoomed .bb-fig-view.panning{cursor:grabbing;}
+.bb-fig .q-graph{display:inline-block;vertical-align:top;width:100%;max-width:none;margin:0;user-select:none;-webkit-user-drag:none;}
+.bb-fig.bb-fig-full{position:fixed;inset:5vh 5vw;width:auto;margin:0;z-index:9000;box-shadow:0 0 0 100vmax rgba(0,0,0,.45),0 12px 40px rgba(0,0,0,.3);}
+.bb-fig.bb-fig-full .bb-fig-view{flex:1;height:auto !important;}
+.q-tbl-cap{text-align:center;font-family:var(--serif);font-size:16px;margin:12px 0 -4px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════ START SCREEN ═══════ -->
+<div id="screen-start" class="screen active">
+  <div class="start-card">
+    <div class="start-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4"/><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+      Math Assessment
+    </div>
+    <h1 class="start-title">Advanced Math<br>Part 2</h1>
+    <div class="start-meta">
+      <span>1 Hour 30 Minutes</span>
+      <span class="start-meta-dot"></span>
+      <span>27 Questions</span>
+      <span class="start-meta-dot"></span>
+      <span>Calculator Permitted</span>
+    </div>
+    <div class="start-divider"></div>
+    <div class="start-form">
+      <div class="start-field">
+        <label for="access-code">Class Access Code</label>
+        <input type="text" id="access-code" class="masked-input" spellcheck="false" placeholder="Enter the code given by your teacher" autocomplete="off"/>
+      </div>
+      <div class="start-field">
+        <label for="student-name">Student Name</label>
+        <input type="text" id="student-name" placeholder="Enter your full name" autocomplete="off"/>
+      </div>
+      <button id="btn-start" onclick="startExam()">Begin Exam</button>
+    </div>
+    <div class="resume-banner" id="resume-banner">
+      A saved session was found. Enter the same student name to resume where you left off.
+    </div>
+    <p class="start-note">Do not close the browser tab once the exam has started.</p>
+  </div>
+</div>
+
+<!-- ═══════ EXAM SCREEN ═══════ -->
+<div id="screen-exam" class="screen">
+
+  <!-- TOP HEADER -->
+  <header class="bb-hdr">
+    <div class="bb-hdr-left">
+      <span class="bb-sect-label">Advanced Math Part 2</span>
+      <button class="bb-dir-btn" type="button" onclick="openDirections()">
+        Directions
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="bb-hdr-ctr">
+      <div class="bb-timer-wrap">
+        <div class="bb-timer-num" id="timer-box">1:30:00</div>
+        <button class="bb-timer-tog" id="timer-tog" type="button" onclick="toggleTimer()">Hide</button>
+      </div>
+    </div>
+    <div class="bb-hdr-right">
+      <button class="bb-tool-btn" id="calc-toggle-btn" type="button" onclick="toggleCalculator()">
+        <svg class="bb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2.5" width="14" height="19" rx="1.5"/><rect x="7.5" y="5" width="9" height="4" rx=".5"/><g fill="currentColor" stroke="none"><rect x="7.5" y="11" width="2.2" height="1.8"/><rect x="10.9" y="11" width="2.2" height="1.8"/><rect x="14.3" y="11" width="2.2" height="1.8"/><rect x="7.5" y="14.2" width="2.2" height="1.8"/><rect x="10.9" y="14.2" width="2.2" height="1.8"/><rect x="14.3" y="14.2" width="2.2" height="1.8"/><rect x="7.5" y="17.4" width="2.2" height="1.8"/><rect x="10.9" y="17.4" width="2.2" height="1.8"/><rect x="14.3" y="17.4" width="2.2" height="1.8"/></g></svg>
+        <span class="btn-label">Calculator</span>
+      </button>
+      <button class="bb-tool-btn" id="ref-btn" type="button" onclick="openReference()">
+        <span class="bb-ico bb-ref-ico"><i>x</i><sup>2</sup></span>
+        <span class="btn-label">Reference</span>
+      </button>
+      <div class="bb-more-wrap">
+        <button class="bb-tool-btn" id="more-btn" type="button" onclick="toggleMoreMenu(event)">
+          <svg class="bb-ico" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          <span class="btn-label">More</span>
+        </button>
+        <div class="bb-more-menu hidden" id="more-menu">
+          <button type="button" onclick="closeMoreMenu();openDirections()">Directions</button>
+          <button type="button" onclick="closeMoreMenu();openNavigator()">Question Navigator</button>
+          <button type="button" class="bb-more-submit" onclick="closeMoreMenu();confirmSubmit()">Submit Exam</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="bb-practice-banner" id="practice-banner">THIS IS A PRACTICE</div>
+
+  <!-- MAIN: split pane -->
+  <div class="bb-main" id="bb-main">
+
+    <!-- CALCULATOR PANE -->
+    <div class="calc-pane hidden" id="calc-pane">
+      <div class="calc-pane-hd" id="calc-drag-handle" onpointerdown="startCalculatorDrag(event)">
+        <div class="calc-mode-tabs">
+          <button class="calc-mode-btn active" id="calc-mode-graphing" title="Graphing" type="button" onclick="switchCalculatorMode('graphing',event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h3l2-7 4 14 3-10 2 3h4"/></svg>
+            <span class="calc-mode-txt">Graphing</span>
+          </button>
+          <button class="calc-mode-btn" id="calc-mode-scientific" title="Scientific" type="button" onclick="switchCalculatorMode('scientific',event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+            <span class="calc-mode-txt">Scientific</span>
+          </button>
+        </div>
+        <div class="calc-drag-grip" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <button class="calc-pane-close" type="button" onclick="toggleCalculator()" aria-label="Close calculator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+      </div>
+      <div id="desmos-wrap"></div>
+      <div class="calc-resize-handle" onpointerdown="startCalculatorResize(event)" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8.5 8.5L15.5 15.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="butt"/><polygon points="5,5 12.5,5 5,12.5" fill="currentColor"/><polygon points="19,19 11.5,19 19,11.5" fill="currentColor"/></svg></div>
+    </div>
+
+    <!-- DRAG DIVIDER -->
+    <div class="pane-divider hidden" id="pane-divider" onmousedown="startPaneResize(event)"></div>
+
+    <!-- QUESTION PANE -->
+    <div class="q-pane" id="q-pane">
+      <div class="bb-q-card">
+        <div class="bb-q-meta">
+          <div class="bb-q-num-badge" id="q-number-label">1</div>
+          <button class="bb-mark-btn" id="mark-review-btn" type="button" onclick="toggleMarkForReview()">
+            <svg class="bb-mark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h12v20l-6-3-6 3V2z"/></svg>
+            Mark for Review
+          </button>
+          <button class="bb-abc-btn active" id="abc-btn" type="button" onclick="toggleCrossTool()" title="Cross out answer choices"><span>ABC</span></button>
+        </div>
+        <div class="bb-q-body">
+          <div class="question-content" id="question-content"></div>
+          <div id="answer-area"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM FOOTER -->
+  <footer class="bb-ftr">
+    <div class="bb-ftr-left">
+      <span class="bb-sname" id="footer-student-name"></span>
+    </div>
+    <div class="bb-ftr-ctr">
+      <button class="bb-navctr-btn" type="button" onclick="openNavigator()">
+        Question <span id="nav-q-cur">1</span> of 27 &nbsp;&#9652;
+      </button>
+    </div>
+    <div class="bb-ftr-right">
+      <button class="bb-btn-back" id="btn-prev" type="button" onclick="prevQuestion()" disabled>Back</button>
+      <button class="bb-btn-next" id="btn-next" type="button" onclick="nextQuestion()">Next</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════ SUBMITTED SCREEN ═══════ -->
+<div id="screen-submitted" class="screen">
+  <div class="submitted-card">
+    <div class="submitted-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 id="submitted-title">Submitted Successfully</h2>
+    <p id="submitted-msg">Your exam has been recorded. Results have been sent to your teacher.</p>
+    <div id="score-display" class="score-box" style="display:none">
+      <div class="score-num" id="score-fraction">— / —</div>
+      <div class="score-label">Correct Answers</div>
+      <div class="score-pct" id="score-pct"></div>
+    </div>
+    <div id="email-status" class="email-status"></div>
+    <button class="btn-review" onclick="showReview()">Review My Answers</button>
+    <button class="btn-reattempt" onclick="startReattempt()">Re-attempt Exam</button>
+    <p class="submitted-small">You may now close this tab.</p>
+  </div>
+</div>
+
+<!-- ═══════ REVIEW SCREEN ═══════ -->
+<div id="screen-review" class="screen">
+  <div class="review-header">
+    <div class="review-header-left">
+      <div class="review-header-eyebrow">Answer Review</div>
+      <h2>Advanced Math Part 2</h2>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="review-score-pill" id="review-score-pill">— / 27</span>
+      <button class="review-back-btn" onclick="startReattempt()">Re-attempt</button>
+      <button class="review-back-btn" onclick="showScreen('screen-submitted')">&#8592; Back</button>
+    </div>
+  </div>
+  <div class="review-body" id="review-body"></div>
+</div>
+
+<!-- ═══════ NAVIGATOR OVERLAY ═══════ -->
+<div id="nav-overlay" class="hidden">
+  <div class="bb-nav-panel">
+    <div class="bb-nav-ph">
+      <h3>Question Navigator</h3>
+      <div class="bb-nav-legend">
+        <div class="bb-nav-li"><span class="bb-nav-dot nd-ans"></span> Answered</div>
+        <div class="bb-nav-li"><span class="bb-nav-dot nd-cur"></span> Current</div>
+        <div class="bb-nav-li"><span class="bb-nav-dot nd-mark"></span> Marked</div>
+        <div class="bb-nav-li"><span class="bb-nav-dot nd-none"></span> Unanswered</div>
+      </div>
+    </div>
+    <div class="bb-nav-palette" id="nav-palette"></div>
+    <button class="bb-nav-close" type="button" onclick="closeNavigator()">Close Navigator</button>
+  </div>
+</div>
+
+<!-- ═══════ DIRECTIONS MODAL ═══════ -->
+<div id="dir-overlay" class="hidden">
+  <div class="bb-dir-panel">
+    <div class="bb-dir-hd"><h2>Directions</h2></div>
+    <div class="bb-dir-body">
+      <p>The questions in this section address a number of important math skills.</p>
+      <p>Use of a calculator is permitted for all questions. A reference sheet, calculator, and these directions can be accessed throughout the test.</p>
+      <p>Unless otherwise indicated:</p>
+      <ul>
+        <li>All variables and expressions represent real numbers.</li>
+        <li>Figures provided are drawn to scale.</li>
+        <li>All figures lie in a plane.</li>
+        <li>The domain of a given function <em>f</em> is the set of all real numbers <em>x</em> for which <em>f</em>(<em>x</em>) is a real number.</li>
+      </ul>
+      <p>For <strong>multiple-choice questions</strong>, solve each problem and choose the correct answer from the choices provided. Each multiple-choice question has a single correct answer.</p>
+      <p>For <strong>student-produced response questions</strong>, solve each problem and enter your answer as described below.</p>
+      <ul>
+        <li>If you find <strong>more than one correct answer</strong>, enter only one answer.</li>
+        <li>You can enter up to 5 characters for a <strong>positive</strong> answer and up to 6 characters (including the negative sign) for a <strong>negative</strong> answer.</li>
+        <li>If your answer is a <strong>fraction</strong> that doesn’t fit in the provided space, enter the decimal equivalent.</li>
+        <li>If your answer is a <strong>decimal</strong> that doesn’t fit in the provided space, enter it by truncating or rounding at the fourth digit.</li>
+        <li>If your answer is a <strong>mixed number</strong> (such as 3<span class='frac'><span class='fnum'>1</span><span class='fden'>2</span></span>), enter it as an improper fraction (7/2) or its decimal equivalent (3.5).</li>
+        <li>Don’t enter <strong>symbols</strong> such as a percent sign, comma, or dollar sign.</li>
+      </ul>
+      <p class="dir-ex-title">Examples</p>
+      <div class="dir-ex-wrap"><table class="dir-ex">
+        <thead><tr><th>Answer</th><th>Acceptable ways to enter answer</th><th>Unacceptable: will NOT receive credit</th></tr></thead>
+        <tbody>
+          <tr><td class="dir-ex-ans">3.5</td><td><code>3.5</code><code>3.50</code><code>7/2</code></td><td><code>31/2</code><code>3 1/2</code></td></tr>
+          <tr><td class="dir-ex-ans"><span class='frac'><span class='fnum'>2</span><span class='fden'>3</span></span></td><td><code>2/3</code><code>.6666</code><code>.6667</code><code>0.666</code><code>0.667</code></td><td><code>0.66</code><code>.66</code><code>0.67</code><code>.67</code></td></tr>
+          <tr><td class="dir-ex-ans">&minus;<span class='frac'><span class='fnum'>1</span><span class='fden'>3</span></span></td><td><code>-1/3</code><code>-.3333</code><code>-0.333</code></td><td><code>-.33</code><code>-0.33</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="bb-dir-ft">
+      <button class="bb-dir-close" type="button" onclick="closeDirections()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SUBMIT CONFIRM MODAL ═══════ -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h3>Submit Exam?</h3>
+    <p id="modal-message"></p>
+    <div class="modal-buttons">
+      <button class="btn-modal-cancel" onclick="closeModal()">Go Back</button>
+      <button class="btn-modal-confirm" id="modal-confirm-btn">Submit Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ REFERENCE SHEET MODAL ═══════ -->
+<div id="ref-overlay" class="hidden">
+  <div class="ref-panel">
+    <div class="ref-hd">
+      <h2>Reference Sheet</h2>
+      <button class="ref-close" type="button" onclick="closeReference()">Close</button>
+    </div>
+    <div class="ref-body">
+
+      <div class="ref-cols">
+
+        <!-- Circle -->
+        <div class="ref-figure">
+          <svg width="130" height="115" viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="65" cy="55" r="44" fill="none" stroke="#111" stroke-width="1.5"/>
+            <circle cx="65" cy="55" r="2.8" fill="#111"/>
+            <line x1="65" y1="55" x2="109" y2="55" stroke="#111" stroke-width="1.3"/>
+            <text x="83" y="50" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">r</text>
+          </svg>
+          <div class="ref-eq"><em>A</em> = π<em>r</em>²</div>
+          <div class="ref-eq"><em>C</em> = 2π<em>r</em></div>
+        </div>
+
+        <!-- Rectangle -->
+        <div class="ref-figure">
+          <svg width="150" height="115" viewBox="0 0 150 115" xmlns="http://www.w3.org/2000/svg">
+            <rect x="18" y="28" width="114" height="60" fill="none" stroke="#111" stroke-width="1.5"/>
+            <text x="68" y="20" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">ℓ</text>
+            <text x="136" y="62" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">w</text>
+          </svg>
+          <div class="ref-eq"><em>A</em> = ℓ<em>w</em></div>
+        </div>
+
+        <!-- Triangle -->
+        <div class="ref-figure">
+          <svg width="130" height="115" viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="14,95 116,95 40,20" fill="none" stroke="#111" stroke-width="1.5"/>
+            <line x1="40" y1="20" x2="40" y2="95" stroke="#111" stroke-width="1.2" stroke-dasharray="4,3"/>
+            <rect x="40" y="87" width="8" height="8" fill="none" stroke="#111" stroke-width="1"/>
+            <text x="44" y="60" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">h</text>
+            <text x="62" y="111" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">b</text>
+          </svg>
+          <div class="ref-eq"><em>A</em> = <span class="ref-frac"><span class="rn">1</span><span class="rd">2</span></span><em>bh</em></div>
+        </div>
+
+        <!-- Pythagorean -->
+        <div class="ref-figure">
+          <svg width="130" height="115" viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="14,95 114,95 14,18" fill="none" stroke="#111" stroke-width="1.5"/>
+            <rect x="14" y="87" width="8" height="8" fill="none" stroke="#111" stroke-width="1"/>
+            <text x="2" y="58" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">b</text>
+            <text x="58" y="111" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">a</text>
+            <text x="68" y="52" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">c</text>
+          </svg>
+          <div class="ref-eq"><em>c</em>² = <em>a</em>² + <em>b</em>²</div>
+        </div>
+
+        <!-- Rectangular prism -->
+        <div class="ref-figure">
+          <svg width="150" height="115" viewBox="0 0 150 115" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12,88 12,44 54,24 54,68" fill="none" stroke="#111" stroke-width="1.4"/>
+            <polygon points="54,24 126,24 126,68 54,68" fill="none" stroke="#111" stroke-width="1.4"/>
+            <polygon points="12,88 84,88 126,68 54,68" fill="none" stroke="#111" stroke-width="1.4"/>
+            <line x1="12" y1="44" x2="84" y2="44" stroke="#111" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="84" y1="44" x2="126" y2="24" stroke="#111" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="84" y1="44" x2="84" y2="88" stroke="#111" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="36" y="102" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">ℓ</text>
+            <text x="104" y="86" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">w</text>
+            <text x="128" y="50" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">h</text>
+          </svg>
+          <div class="ref-eq"><em>V</em> = ℓ<em>wh</em></div>
+        </div>
+
+        <!-- Cylinder -->
+        <div class="ref-figure">
+          <svg width="140" height="115" viewBox="0 0 140 115" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="70" cy="24" rx="44" ry="13" fill="none" stroke="#111" stroke-width="1.4"/>
+            <ellipse cx="70" cy="88" rx="44" ry="13" fill="none" stroke="#111" stroke-width="1.4"/>
+            <line x1="26" y1="24" x2="26" y2="88" stroke="#111" stroke-width="1.4"/>
+            <line x1="114" y1="24" x2="114" y2="88" stroke="#111" stroke-width="1.4"/>
+            <circle cx="70" cy="24" r="2.8" fill="#111"/>
+            <line x1="70" y1="24" x2="114" y2="24" stroke="#111" stroke-width="1.2"/>
+            <text x="88" y="20" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">r</text>
+            <text x="116" y="60" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">h</text>
+          </svg>
+          <div class="ref-eq"><em>V</em> = π<em>r</em>²<em>h</em></div>
+        </div>
+
+        <!-- Sphere -->
+        <div class="ref-figure">
+          <svg width="130" height="115" viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="65" cy="57" r="46" fill="none" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="65" cy="57" rx="46" ry="14" fill="none" stroke="#111" stroke-width="1.2" stroke-dasharray="5,3"/>
+            <circle cx="65" cy="57" r="2.8" fill="#111"/>
+            <line x1="65" y1="57" x2="111" y2="57" stroke="#111" stroke-width="1.3"/>
+            <text x="84" y="52" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">r</text>
+          </svg>
+          <div class="ref-eq"><em>V</em> = <span class="ref-frac"><span class="rn">4</span><span class="rd">3</span></span>π<em>r</em>³</div>
+        </div>
+
+        <!-- Cone — apex top-center, ellipse base, h vertical dashed, r horizontal dashed, right angle where they meet -->
+        <div class="ref-figure">
+          <svg width="130" height="115" viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="65" cy="88" rx="44" ry="13" fill="none" stroke="#111" stroke-width="1.4"/>
+            <line x1="21" y1="88" x2="65" y2="12" stroke="#111" stroke-width="1.4"/>
+            <line x1="109" y1="88" x2="65" y2="12" stroke="#111" stroke-width="1.4"/>
+            <!-- h: vertical dashed from apex down to base center -->
+            <line x1="65" y1="12" x2="65" y2="88" stroke="#111" stroke-width="1.1" stroke-dasharray="4,3"/>
+            <!-- r: horizontal dashed from center to right edge -->
+            <line x1="65" y1="88" x2="109" y2="88" stroke="#111" stroke-width="1.1" stroke-dasharray="4,3"/>
+            <!-- right angle box where h meets base (bottom of h, left of r) -->
+            <rect x="65" y="80" width="8" height="8" fill="none" stroke="#111" stroke-width="1"/>
+            <!-- h label left of dashed vertical -->
+            <text x="48" y="54" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">h</text>
+            <!-- r label above dashed horizontal -->
+            <text x="83" y="84" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">r</text>
+          </svg>
+          <div class="ref-eq"><em>V</em> = <span class="ref-frac"><span class="rn">1</span><span class="rd">3</span></span>π<em>r</em>²<em>h</em></div>
+        </div>
+
+        <!-- Pyramid — SAT style: apex top, rectangular base in perspective, h dashed inside with right angle -->
+        <div class="ref-figure">
+          <svg width="170" height="130" viewBox="0 0 170 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- apex -->
+            <!-- Base: 4-point perspective rectangle. Front-left, front-right, back-right, back-left -->
+            <!-- front-left=20,110  front-right=130,110  back-right=150,72  back-left=40,72 -->
+            <polygon points="20,110 130,110 150,72 40,72" fill="none" stroke="#111" stroke-width="1.4"/>
+            <!-- edges from apex (85,14) to each base corner -->
+            <line x1="85" y1="14" x2="20" y2="110" stroke="#111" stroke-width="1.4"/>
+            <line x1="85" y1="14" x2="130" y2="110" stroke="#111" stroke-width="1.4"/>
+            <line x1="85" y1="14" x2="150" y2="72" stroke="#111" stroke-width="1.4"/>
+            <line x1="85" y1="14" x2="40" y2="72" stroke="#111" stroke-width="1" stroke-dasharray="4,3"/>
+            <!-- h: dashed vertical from apex to base center (85,91) -->
+            <line x1="85" y1="14" x2="85" y2="91" stroke="#111" stroke-width="1.1" stroke-dasharray="4,3"/>
+            <!-- right angle box at base of h -->
+            <rect x="85" y="83" width="8" height="8" fill="none" stroke="#111" stroke-width="1"/>
+            <!-- h label -->
+            <text x="89" y="56" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">h</text>
+            <!-- l: front bottom edge label -->
+            <text x="66" y="126" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">ℓ</text>
+            <!-- w: right side edge label -->
+            <text x="142" y="96" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">w</text>
+          </svg>
+          <div class="ref-eq"><em>V</em> = <span class="ref-frac"><span class="rn">1</span><span class="rd">3</span></span>ℓ<em>wh</em></div>
+        </div>
+
+        <!-- 30-60-90: right angle bottom-right, vertical leg on right, hypotenuse top-right to bottom-left -->
+        <div class="ref-figure">
+          <svg width="155" height="135" viewBox="0 0 155 135" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="10,108 130,108 130,14" fill="none" stroke="#111" stroke-width="1.6"/>
+            <rect x="121" y="99" width="9" height="9" fill="none" stroke="#111" stroke-width="1.1"/>
+            <text x="50" y="52" font-size="13" font-family="Georgia,serif" fill="#111">2x</text>
+            <text x="108" y="38" font-size="10" fill="#333">60°</text>
+            <text x="133" y="66" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">x</text>
+            <text x="28" y="104" font-size="10" fill="#333">30°</text>
+            <text x="46" y="128" font-size="13" font-family="Georgia,serif" fill="#111">x&#x221A;3</text>
+          </svg>
+        </div>
+
+        <!-- 45-45-90: right angle bottom-right, vertical leg on right, hypotenuse top-right to bottom-left -->
+        <div class="ref-figure">
+          <svg width="145" height="125" viewBox="0 0 145 125" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="10,112 120,112 120,18" fill="none" stroke="#111" stroke-width="1.6"/>
+            <rect x="111" y="103" width="9" height="9" fill="none" stroke="#111" stroke-width="1.1"/>
+            <text x="44" y="56" font-size="13" font-family="Georgia,serif" fill="#111">s√2</text>
+            <text x="100" y="42" font-size="10" fill="#333">45°</text>
+            <text x="123" y="70" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">s</text>
+            <text x="28" y="108" font-size="10" fill="#333">45°</text>
+            <text x="56" y="124" font-size="13" font-family="Georgia,serif" font-style="italic" fill="#111">s</text>
+          </svg>
+        </div>
+
+      </div>
+
+      <hr class="ref-divider"/>
+
+      <!-- Laws -->
+      <div class="ref-laws">
+        <div class="ref-law">The number of degrees of arc in a circle is 360.</div>
+        <div class="ref-law">The number of radians of arc in a circle is 2π.</div>
+        <div class="ref-law">The sum of the measures in degrees of the angles of a triangle is 180.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ 5-MINUTE WARNING MODAL ═══════ -->
+<div id="time-warning-overlay" class="hidden">
+  <div class="time-warning-box">
+    <div class="time-warning-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <h3>5 Minutes Remaining</h3>
+    <p>You have 5 minutes left. Please review your answers and submit before time runs out.</p>
+    <button class="btn-warning-ok" onclick="closeTimeWarning()">OK, Got It</button>
+  </div>
+</div>
+
+<!-- ═══════ HIGHLIGHT TOOLBAR ═══════ -->
+<div id="hl-toolbar">
+  <div class="hl-swatch yellow" title="Highlight yellow" onclick="applyHighlight('yellow')"></div>
+  <div class="hl-swatch blue"   title="Highlight blue"   onclick="applyHighlight('blue')"></div>
+  <div class="hl-swatch pink"   title="Highlight pink"   onclick="applyHighlight('pink')"></div>
+  <div class="hl-sep"></div>
+  <button class="hl-btn ul-btn"  title="Underline"           onclick="applyUnderline()">U</button>
+  <button class="hl-btn del-btn" title="Remove formatting"    onclick="removeHighlight()">&#10005;</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
+const EXAM_DURATION_SECONDS   = 5400;
+const EXAM_TITLE              = "Advanced Math Part 2";
+const EMAILJS_PUBLIC_KEY      = "AWaz2SLFBz0DYBhLQ";
+const EMAILJS_SERVICE_ID      = "service_2gx7k5a";
+const EMAILJS_TEMPLATE_ID     = "template_nvb1v3n";
+const RECIPIENT_EMAIL         = "roumiyehmostafa@gmail.com";
+const LS_KEY                  = "advancedMathPart2_session_v2";
+
+/* ══════════════════════════════════════════
+   QUESTIONS
+══════════════════════════════════════════ */
+const questions = [
+  {"number":1,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle y = 9\\left(\\frac{a}{7}\\right)^{x + c} - b\">y = 9\\left(\\frac{a}{7}\\right)^{x + c} - b</span></div><div>How many times does the graph of the given equation in the <em>xy</em>-plane cross the <span class=\"math-katex\" data-katex=\"x\">x</span>-axis, where <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"a\">a</span>,</span> <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b\">b</span>,</span> and <span class=\"math-katex\" data-katex=\"c\">c</span> are positive constants such that <span class=\"math-katex\" data-katex=\"a &gt; 7\">a &gt; 7</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b &gt; c\">b &gt; c</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"Zero"},{"letter":"B","html":"One"},{"letter":"C","html":"Two"},{"letter":"D","html":"Three"}],"points":1},
+  {"number":2,"type":"open","text":"<div>The product of two positive integers is <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"462\">462</span>.</span> If the first integer is <span class=\"math-katex\" data-katex=\"5\">5</span> greater than twice the second integer, what is the smaller of the two integers?</div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":3,"type":"open","text":"<div>The function <span class=\"math-katex\" data-katex=\"g\">g</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(x) = \\dfrac{|x|}{a} - 14\">g(x) = \\dfrac{|x|}{a} - 14</span>,</span> where <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"a &lt; 0\">a &lt; 0</span>.</span> What is the product of <span class=\"math-katex\" data-katex=\"g(15a)\">g(15a)</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(7a)\">g(7a)</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":4,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle y = 7{,}400(0.87)^x\">y = 7{,}400(0.87)^x</span></div><div>The given equation estimates the value, in dollars, of a certain piece of equipment <span class=\"math-katex\" data-katex=\"x\">x</span> years after it was purchased. According to the given equation, what was the estimated value, in dollars, of the piece of equipment at the time it was purchased?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 740\">740</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 6{,}438\">6{,}438</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 7{,}400\">7{,}400</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 8{,}700\">8{,}700</span>"}],"points":1},
+  {"number":5,"type":"mcq","text":"<table class=\"q-tbl\"><thead><tr><th><span class=\"math-katex\" data-katex=\"x\">x</span></th><th><span class=\"math-katex\" data-katex=\"g(x)\">g(x)</span></th></tr></thead><tbody><tr><td><span class=\"math-katex\" data-katex=\"-27\">-27</span></td><td><span class=\"math-katex\" data-katex=\"3\">3</span></td></tr><tr><td><span class=\"math-katex\" data-katex=\"-9\">-9</span></td><td><span class=\"math-katex\" data-katex=\"0\">0</span></td></tr><tr><td><span class=\"math-katex\" data-katex=\"21\">21</span></td><td><span class=\"math-katex\" data-katex=\"5\">5</span></td></tr></tbody></table><div>The table shows three values of <span class=\"math-katex\" data-katex=\"x\">x</span> and their corresponding values of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(x)\">g(x)</span>,</span> where <span class=\"math-katex\" data-katex=\"g(x) = \\dfrac{f(x)}{x + 3}\">g(x) = \\dfrac{f(x)}{x + 3}</span> and <span class=\"math-katex\" data-katex=\"f\">f</span> is a linear function. What is the <span class=\"math-katex\" data-katex=\"y\">y</span>-intercept of the graph of <span class=\"math-katex\" data-katex=\"y = f(x)\">y = f(x)</span> in the <em>xy</em>-plane?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 36)\">(0, 36)</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 12)\">(0, 12)</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 4)\">(0, 4)</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, -9)\">(0, -9)</span>"}],"points":1},
+  {"number":6,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle h(x) = 2(x - 4)^2 - 32\">h(x) = 2(x - 4)^2 - 32</span></div><div>The quadratic function <span class=\"math-katex\" data-katex=\"h\">h</span> is defined as shown. In the <em>xy</em>-plane, the graph of <span class=\"math-katex\" data-katex=\"y = h(x)\">y = h(x)</span> intersects the <span class=\"math-katex\" data-katex=\"x\">x</span>-axis at the points <span class=\"math-katex\" data-katex=\"(0, 0)\">(0, 0)</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"(t, 0)\">(t, 0)</span>,</span> where <span class=\"math-katex\" data-katex=\"t\">t</span> is a constant. What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"t\">t</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 1\">1</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 2\">2</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 4\">4</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 8\">8</span>"}],"points":1},
+  {"number":7,"type":"open","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = x^2 - 48x + 2{,}304\">f(x) = x^2 - 48x + 2{,}304</span></div><div>What is the minimum value of the given function?</div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":8,"type":"mcq","text":"<div>The function <span class=\"math-katex\" data-katex=\"f\">f</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(x) = (-8)(2)^x + 22\">f(x) = (-8)(2)^x + 22</span>.</span> What is the <span class=\"math-katex\" data-katex=\"y\">y</span>-intercept of the graph of <span class=\"math-katex\" data-katex=\"y = f(x)\">y = f(x)</span> in the <em>xy</em>-plane?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 14)\">(0, 14)</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 2)\">(0, 2)</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, 22)\">(0, 22)</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle (0, -8)\">(0, -8)</span>"}],"points":1},
+  {"number":9,"type":"mcq","text":"<div>An auditorium has seats for <span class=\"math-katex\" data-katex=\"1{,}800\">1{,}800</span> people. Tickets to attend a show at the auditorium currently cost <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"\\$4.00\">\\$4.00</span>.</span> For each <span class=\"math-katex\" data-katex=\"\\$1.00\">\\$1.00</span> increase to the ticket price, <span class=\"math-katex\" data-katex=\"100\">100</span> fewer tickets will be sold. This situation can be modeled by the equation <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"y = -100x^2 + 1{,}400x + 7{,}200\">y = -100x^2 + 1{,}400x + 7{,}200</span>,</span> where <span class=\"math-katex\" data-katex=\"x\">x</span> represents the increase in ticket price, in dollars, and <span class=\"math-katex\" data-katex=\"y\">y</span> represents the revenue, in dollars, from ticket sales. If this equation is graphed in the <em>xy</em>-plane, at what value of <span class=\"math-katex\" data-katex=\"x\">x</span> is the maximum of the graph?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 4\">4</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 7\">7</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 14\">14</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 18\">18</span>"}],"points":1},
+  {"number":10,"type":"open","text":"<div>Function <span class=\"math-katex\" data-katex=\"f\">f</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(x) = -a^x + b\">f(x) = -a^x + b</span>,</span> where <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> are constants. In the <em>xy</em>-plane, the graph of <span class=\"math-katex\" data-katex=\"y = f(x) - 12\">y = f(x) - 12</span> has a <span class=\"math-katex\" data-katex=\"y\">y</span>-intercept at <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"\\left(0, -\\frac{75}{7}\\right)\">\\left(0, -\\frac{75}{7}\\right)</span>.</span> The product of <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> is <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"\\frac{320}{7}\">\\frac{320}{7}</span>.</span> What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"a\">a</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":11,"type":"open","text":"<div>The function <span class=\"math-katex\" data-katex=\"f\">f</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(x) = a^x + b\">f(x) = a^x + b</span>,</span> where <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> are constants. In the <em>xy</em>-plane, the graph of <span class=\"math-katex\" data-katex=\"y = f(x)\">y = f(x)</span> has an <span class=\"math-katex\" data-katex=\"x\">x</span>-intercept at <span class=\"math-katex\" data-katex=\"(2, 0)\">(2, 0)</span> and a <span class=\"math-katex\" data-katex=\"y\">y</span>-intercept at <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"(0, -323)\">(0, -323)</span>.</span> What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b\">b</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":12,"type":"mcq","text":"<div>For the exponential function <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f\">f</span>,</span> the value of <span class=\"math-katex\" data-katex=\"f(0)\">f(0)</span> is <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"c\">c</span>,</span> where <span class=\"math-katex\" data-katex=\"c\">c</span> is a constant. Of the following equations that define the function <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f\">f</span>,</span> which equation shows the value of <span class=\"math-katex\" data-katex=\"c\">c</span> as the coefficient or the base?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 22(1.5)^{x + 1}\">f(x) = 22(1.5)^{x + 1}</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 33(1.5)^x\">f(x) = 33(1.5)^x</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 49.5(1.5)^{x - 1}\">f(x) = 49.5(1.5)^{x - 1}</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 74.25(1.5)^{x - 2}\">f(x) = 74.25(1.5)^{x - 2}</span>"}],"points":1},
+  {"number":13,"type":"mcq","text":"<div class=\"q-tbl-cap\">Growth of a Culture of Bacteria</div><table class=\"q-tbl q-tbl-h\"><thead><tr><th>Day</th><th>Number of bacteria per<br>milliliter at end of day</th></tr></thead><tbody><tr><td><span class=\"math-katex\" data-katex=\"1\">1</span></td><td><span class=\"math-katex\" data-katex=\"2.5 \\times 10^5\">2.5 \\times 10^5</span></td></tr><tr><td><span class=\"math-katex\" data-katex=\"2\">2</span></td><td><span class=\"math-katex\" data-katex=\"5.0 \\times 10^5\">5.0 \\times 10^5</span></td></tr><tr><td><span class=\"math-katex\" data-katex=\"3\">3</span></td><td><span class=\"math-katex\" data-katex=\"1.0 \\times 10^6\">1.0 \\times 10^6</span></td></tr></tbody></table><div>A culture of bacteria is growing at an exponential rate, as shown in the table above. At this rate, on which day would the number of bacteria per milliliter reach <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"5.12 \\times 10^8\">5.12 \\times 10^8</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"Day <span class=\"math-katex\" data-katex=\"5\">5</span>"},{"letter":"B","html":"Day <span class=\"math-katex\" data-katex=\"9\">9</span>"},{"letter":"C","html":"Day <span class=\"math-katex\" data-katex=\"11\">11</span>"},{"letter":"D","html":"Day <span class=\"math-katex\" data-katex=\"12\">12</span>"}],"points":1},
+  {"number":14,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 4x^2 + 64x + 262\">f(x) = 4x^2 + 64x + 262</span></div><div>The function <span class=\"math-katex\" data-katex=\"g\">g</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(x) = f(x + 5)\">g(x) = f(x + 5)</span>.</span> For what value of <span class=\"math-katex\" data-katex=\"x\">x</span> does <span class=\"math-katex\" data-katex=\"g(x)\">g(x)</span> reach its minimum?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -13\">-13</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -8\">-8</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -5\">-5</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -3\">-3</span>"}],"points":1},
+  {"number":15,"type":"open","text":"<div class=\"bb-fig\" data-zoom=\"1\" contenteditable=\"false\"><div class=\"bb-fig-bar\"><button type=\"button\" class=\"bb-fig-btn\" title=\"Zoom in\" onclick=\"figZoom(this,1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6\"/></svg></button><button type=\"button\" class=\"bb-fig-btn\" title=\"Zoom out\" onclick=\"figZoom(this,-1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5L21 21M7.5 10.5h6\"/></svg></button><span class=\"bb-fig-pct\">100%</span><button type=\"button\" class=\"bb-fig-reset\" onclick=\"figReset(this)\">Reset</button><span class=\"bb-fig-sep\"></span><button type=\"button\" class=\"bb-fig-btn\" title=\"Expand\" onclick=\"figFull(this)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5\"/></svg></button></div><div class=\"bb-fig-view\"><img class=\"q-graph\" alt=\"Graph\" draggable=\"false\" onload=\"figApply(this.closest('.bb-fig'))\" src=\"data:image/png;base64,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\"/></div></div><div>The graph of <span class=\"math-katex\" data-katex=\"y = 2x^2 + bx + c\">y = 2x^2 + bx + c</span> is shown, where <span class=\"math-katex\" data-katex=\"b\">b</span> and <span class=\"math-katex\" data-katex=\"c\">c</span> are constants. What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"bc\">bc</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":16,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle g(x) = \\frac{x^2 - x - a}{x^3 - x - b}\">g(x) = \\frac{x^2 - x - a}{x^3 - x - b}</span></div><div>The function <span class=\"math-katex\" data-katex=\"g\">g</span> is defined by the given equation, where <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> are constants. In the <em>xy</em>-plane, the graph of <span class=\"math-katex\" data-katex=\"y = g(x)\">y = g(x)</span> passes through the point <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"(0, 22)\">(0, 22)</span>,</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(-22) = 0\">g(-22) = 0</span>.</span> What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b\">b</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 23\">23</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 22\">22</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -22\">-22</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle -23\">-23</span>"}],"points":1},
+  {"number":17,"type":"mcq","text":"<div>A rectangle has a length of <span class=\"math-katex\" data-katex=\"x\">x</span> units and a width of <span class=\"math-katex\" data-katex=\"(x - 15)\">(x - 15)</span> units. If the rectangle has an area of <span class=\"math-katex\" data-katex=\"76\">76</span> square units, what is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"x\">x</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 4\">4</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 19\">19</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 23\">23</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 76\">76</span>"}],"points":1},
+  {"number":18,"type":"mcq","text":"<div>The function <span class=\"math-katex\" data-katex=\"h\">h</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"h(x) = a^x + b\">h(x) = a^x + b</span>,</span> where <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> are positive constants. The graph of <span class=\"math-katex\" data-katex=\"y = h(x)\">y = h(x)</span> in the <em>xy</em>-plane passes through the points <span class=\"math-katex\" data-katex=\"(0, 10)\">(0, 10)</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"(2, 13)\">(2, 13)</span>.</span> What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"ab\">ab</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 13\">13</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 18\">18</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 20\">20</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 26\">26</span>"}],"points":1},
+  {"number":19,"type":"open","text":"<div>The function <span class=\"math-katex\" data-katex=\"g\">g</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(x) = (x + 14)(t - x)\">g(x) = (x + 14)(t - x)</span>,</span> where <span class=\"math-katex\" data-katex=\"t\">t</span> is a constant. In the <em>xy</em>-plane, the graph of <span class=\"math-katex\" data-katex=\"y = g(x)\">y = g(x)</span> passes through the point <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"(24, 0)\">(24, 0)</span>.</span> What is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(0)\">g(0)</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":20,"type":"open","text":"<div>The functions <span class=\"math-katex\" data-katex=\"f\">f</span> and <span class=\"math-katex\" data-katex=\"g\">g</span> are defined by the given equations.</div><div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle f(x) = 3 + \\left|-2x - x^2\\right|\">f(x) = 3 + \\left|-2x - x^2\\right|</span></div><div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle g(w) = \\left|\\frac{-w}{w - 1}\\right| - w + 5\">g(w) = \\left|\\frac{-w}{w - 1}\\right| - w + 5</span></div><div>If <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(-4) = c\">f(-4) = c</span>,</span> where <span class=\"math-katex\" data-katex=\"c\">c</span> is a constant, what is the value of <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(c)\">g(c)</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":21,"type":"mcq","text":"<div class=\"bb-fig\" data-zoom=\"1\" contenteditable=\"false\"><div class=\"bb-fig-bar\"><button type=\"button\" class=\"bb-fig-btn\" title=\"Zoom in\" onclick=\"figZoom(this,1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6\"/></svg></button><button type=\"button\" class=\"bb-fig-btn\" title=\"Zoom out\" onclick=\"figZoom(this,-1)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M15.5 15.5L21 21M7.5 10.5h6\"/></svg></button><span class=\"bb-fig-pct\">100%</span><button type=\"button\" class=\"bb-fig-reset\" onclick=\"figReset(this)\">Reset</button><span class=\"bb-fig-sep\"></span><button type=\"button\" class=\"bb-fig-btn\" title=\"Expand\" onclick=\"figFull(this)\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5\"/></svg></button></div><div class=\"bb-fig-view\"><img class=\"q-graph\" alt=\"Graph\" draggable=\"false\" onload=\"figApply(this.closest('.bb-fig'))\" src=\"data:image/png;base64,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\"/></div></div><div>The graph of <span class=\"math-katex\" data-katex=\"y = f(x)\">y = f(x)</span> is shown, where <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(x) = ab^x + c\">f(x) = ab^x + c</span>,</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"a\">a</span>,</span> <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b\">b</span>,</span> and <span class=\"math-katex\" data-katex=\"c\">c</span> are constants. For how many values of <span class=\"math-katex\" data-katex=\"x\">x</span> does <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"f(x) = 0\">f(x) = 0</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"Three"},{"letter":"B","html":"Two"},{"letter":"C","html":"One"},{"letter":"D","html":"Zero"}],"points":1},
+  {"number":22,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle f(t) = 500(0.5)^{\\frac{t}{12}}\">f(t) = 500(0.5)^{\\frac{t}{12}}</span></div><div>The function <span class=\"math-katex\" data-katex=\"f\">f</span> models the intensity of an X-ray beam, in number of particles in the X-ray beam, <span class=\"math-katex\" data-katex=\"t\">t</span> millimeters below the surface of a sample of iron. According to the model, what is the estimated number of particles in the X-ray beam when it is at the surface of the sample of iron?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 500\">500</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 12\">12</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 5\">5</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 2\">2</span>"}],"points":1},
+  {"number":23,"type":"open","text":"<div>The population of the town of Smithville doubled every <span class=\"math-katex\" data-katex=\"75\">75</span> years from <span class=\"math-katex\" data-katex=\"1659\">1659</span> to <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"1959\">1959</span>.</span> The population of this town was <span class=\"math-katex\" data-katex=\"240{,}000\">240{,}000</span> in <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"1959\">1959</span>.</span> What was the population of this town in <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"1659\">1659</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":null,"points":1},
+  {"number":24,"type":"mcq","text":"<div class=\"q-eq\"><span class=\"math-katex\" data-katex=\"\\displaystyle y = 0.25x^2 - 7.5x + 90.25\">y = 0.25x^2 - 7.5x + 90.25</span></div><div>The equation gives the estimated stock price <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"y\">y</span>,</span> in dollars, for a certain company <span class=\"math-katex\" data-katex=\"x\">x</span> days after a new product launched, where <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"0 \\le x \\le 20\">0 \\le x \\le 20</span>.</span> Which statement is the best interpretation of <span class=\"math-katex\" data-katex=\"(x, y) = (1, 83)\">(x, y) = (1, 83)</span> in this context?</div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"The company's estimated stock price increased <span class=\"math-katex\" data-katex=\"\\$83\">\\$83</span> every day after the new product launched."},{"letter":"B","html":"The company's estimated stock price increased <span class=\"math-katex\" data-katex=\"\\$1\">\\$1</span> every <span class=\"math-katex\" data-katex=\"83\">83</span> days after the new product launched."},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"1\">1</span> day after the new product launched, the company's estimated stock price is <span class=\"math-katex\" data-katex=\"\\$83\">\\$83</span>."},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"83\">83</span> days after the new product launched, the company's estimated stock price is <span class=\"math-katex\" data-katex=\"\\$1\">\\$1</span>."}],"points":1},
+  {"number":25,"type":"mcq","text":"<div>Which of the following functions has(have) a minimum value at <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"-3\">-3</span>?</span></div><div class=\"q-roman\"><div><span class=\"q-roman-n\">I.</span> <span class=\"math-katex\" data-katex=\"f(x) = -6(3)^x - 3\">f(x) = -6(3)^x - 3</span></div><div><span class=\"q-roman-n\">II.</span> <span class=\"math-katex\" data-katex=\"g(x) = -3(6)^x\">g(x) = -3(6)^x</span></div></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"I only"},{"letter":"B","html":"II only"},{"letter":"C","html":"I and II"},{"letter":"D","html":"Neither I nor II"}],"points":1},
+  {"number":26,"type":"mcq","text":"<div>The function <span class=\"math-katex\" data-katex=\"g\">g</span> is defined by <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"g(x) = 10^{5x - 8}\">g(x) = 10^{5x - 8}</span>.</span> What is the value of <span class=\"math-katex\" data-katex=\"x\">x</span> when <span class=\"math-katex\" data-katex=\"g(x)\">g(x)</span> is equal to <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"10{,}000\">10{,}000</span>?</span></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle \\frac{11}{5}\">\\frac{11}{5}</span>"},{"letter":"B","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle \\frac{12}{5}\">\\frac{12}{5}</span>"},{"letter":"C","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 3\">3</span>"},{"letter":"D","html":"<span class=\"math-katex\" data-katex=\"\\displaystyle 4\">4</span>"}],"points":1},
+  {"number":27,"type":"mcq","text":"<div>The functions <span class=\"math-katex\" data-katex=\"p\">p</span> and <span class=\"math-katex\" data-katex=\"r\">r</span> are defined by the equations shown, where <span class=\"math-katex\" data-katex=\"a\">a</span> and <span class=\"math-katex\" data-katex=\"b\">b</span> are integer constants such that <span class=\"math-katex\" data-katex=\"a &lt; b\">a &lt; b</span> and <span style=\"white-space:nowrap\"><span class=\"math-katex\" data-katex=\"b &lt; 0\">b &lt; 0</span>.</span> If <span class=\"math-katex\" data-katex=\"y = p(x)\">y = p(x)</span> and <span class=\"math-katex\" data-katex=\"y = r(x)\">y = r(x)</span> are graphed in the <em>xy</em>-plane, which of the following equations displays, as a constant or coefficient, the <span class=\"math-katex\" data-katex=\"y\">y</span>-coordinate of the <span class=\"math-katex\" data-katex=\"y\">y</span>-intercept of the graph of the corresponding function?</div><div class=\"q-roman\"><div><span class=\"q-roman-n\">I.</span> <span class=\"math-katex\" data-katex=\"p(x) = a(4.1)^x + b\">p(x) = a(4.1)^x + b</span></div><div><span class=\"q-roman-n\">II.</span> <span class=\"math-katex\" data-katex=\"r(x) = a(4.1)^{x + b}\">r(x) = a(4.1)^{x + b}</span></div></div>","graphSVG":null,"tableHTML":null,"choices":[{"letter":"A","html":"I only"},{"letter":"B","html":"II only"},{"letter":"C","html":"I and II"},{"letter":"D","html":"Neither I nor II"}],"points":1}
+];
+
+
+/* ── SAT-style answer checking ── */
+function _parseRat(s){
+  let m=s.match(/^(-?)(\d+)\/(\d+)$/);
+  if(m){const d=BigInt(m[3]);if(d===0n)return null;return{n:(m[1]?-1n:1n)*BigInt(m[2]),d,dec:false,k:0};}
+  m=s.match(/^(-?)(\d*)(?:\.(\d*))?$/);
+  if(m&&(m[2]||m[3])){const fr=m[3]||'';return{n:(m[1]?-1n:1n)*BigInt((m[2]||'0')+fr),d:10n**BigInt(fr.length),dec:true,k:fr.length};}
+  return null;
+}
+function _satMatch(entry,key){
+  const s=(entry||'').trim();if(!s||/\s/.test(s))return false;
+  const neg=s[0]==='-',limit=neg?6:5;if(s.length>limit)return false;
+  const e=_parseRat(s),c=_parseRat(key.trim());if(!e||!c)return false;
+  if(e.n*c.d===c.n*e.d)return true;
+  // decimal that fills the whole space: accept truncated or rounded value
+  if(e.dec&&e.k>0&&s.length===limit&&((c.n<0n)===neg)){
+    const P=(c.n<0n?-c.n:c.n)*(10n**BigInt(e.k)),Q=c.d,E=e.n<0n?-e.n:e.n;
+    return E===P/Q||E===(2n*P+Q)/(2n*Q);
+  }
+  return false;
+}
+function isAnswerCorrect(q,sa,key){
+  sa=(sa||'').trim();if(!sa)return false;
+  if(q.type==='mcq')return sa.toUpperCase()===key.trim().toUpperCase();
+  return key.split('|').some(k=>_satMatch(sa,k));
+}
+function _d(a){return a.map(function(c){return String.fromCharCode(c-11);}).join('');}
+const _ac = _d([118,116,121,114,122,126]);
+const _answers=[_d([77]),_d([60,63]),_d([65,59,68]),_d([78]),_d([76]),_d([79]),_d([60,66,61,67]),_d([76]),_d([77]),_d([61,59]),_d([56,62,61,63]),_d([77]),_d([79]),_d([76]),_d([56,61,63]),_d([76]),_d([77]),_d([77]),_d([62,62,65]),_d([56,63,68,58,60,59]),_d([79]),_d([76]),_d([60,64,59,59,59]),_d([78]),_d([79]),_d([77]),_d([79])];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let studentName = "", currentIndex = 0;
+let answers = {}, crossedOut = {}, markedForReview = new Set(), savedQHTML = {};
+let timerSeconds = EXAM_DURATION_SECONDS, timerInterval = null;
+let submitted = false, lastEarned = 0, lastTotal = 0;
+let timerHidden = false, desmosCalc = null, calcOpen = false;
+let paneResizing = false, paneStartX = 0, paneStartW = 0;
+let calcMode = 'graphing';
+let calcDragging = false, calcDragOffsetX = 0, calcDragOffsetY = 0, calcDragMainRect = null;
+let calcDragCaptureEl = null, calcDragPointerId = null;
+let calcWindowResizing = false, calcResizeStartX = 0, calcResizeStartY = 0, calcResizeStartW = 0, calcResizeStartH = 0;
+let calcResizeCaptureEl = null, calcResizePointerId = null;
+let activeRange = null;
+let timePerQuestion = {}, questionStartTime = null;
+
+/* ══════════════════════════════════════════
+   SESSION
+══════════════════════════════════════════ */
+let practiceMode=false;
+function saveSession(){if(practiceMode)return;try{const c={};for(const[k,v]of Object.entries(crossedOut))c[k]=[...v];localStorage.setItem(LS_KEY,JSON.stringify({studentName,answers,timerSeconds,submitted,crossedOut:c,markedForReview:[...markedForReview],savedQHTML,timePerQuestion}));}catch(e){}}
+function loadSession(){try{const r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+function clearSession(){try{localStorage.removeItem(LS_KEY);}catch(e){}}
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+window.addEventListener('load',()=>{const s=loadSession();if(s&&!s.submitted)document.getElementById('resume-banner').style.display='block';});
+
+/* ══════════════════════════════════════════
+   START
+══════════════════════════════════════════ */
+
+function sendStartNotification(){
+  if(EMAILJS_PUBLIC_KEY==="YOUR_PUBLIC_KEY")return;
+  try{
+    emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+      to_email:RECIPIENT_EMAIL,
+      subject:'[EXAM STARTED] '+studentName+' \u2014 '+EXAM_TITLE,
+      student_name:studentName,
+      score:'STARTED (not yet submitted)',
+      exam_date:new Date().toLocaleDateString()+' at '+new Date().toLocaleTimeString(),
+      time_spent:'0m 00s',
+      results_json:JSON.stringify({event:'EXAM_STARTED',studentName,examTitle:EXAM_TITLE,startTime:new Date().toISOString()},null,2),
+      verification:'Start notification'
+    }).catch(e=>console.log('Start email failed:',e));
+  }catch(e){console.log('Start email error:',e);}
+}
+
+function startExam(){
+  const cInp=document.getElementById('access-code'),sInp=document.getElementById('student-name');
+  const code=cInp.value.trim(),sName=sInp.value.trim();
+  let valid=true;
+  if(code.toLowerCase()!==_ac.toLowerCase()){cInp.classList.add('error');cInp.value='';cInp.placeholder='Wrong code — ask your teacher…';valid=false;}
+  if(!sName){sInp.classList.add('error');sInp.placeholder='Please enter your name…';valid=false;}
+  if(!valid)return;
+  studentName=sName;
+  document.getElementById('footer-student-name').textContent=studentName;
+  const session=loadSession();
+  if(session&&!session.submitted&&session.studentName===studentName){
+    answers=session.answers||{};timerSeconds=session.timerSeconds||EXAM_DURATION_SECONDS;
+    crossedOut={};if(session.crossedOut)for(const[k,v]of Object.entries(session.crossedOut))crossedOut[k]=new Set(v);
+    markedForReview=new Set(session.markedForReview||[]);savedQHTML=session.savedQHTML||{};timePerQuestion=session.timePerQuestion||{};
+  }else{answers={};timerSeconds=EXAM_DURATION_SECONDS;crossedOut={};markedForReview=new Set();savedQHTML={};timePerQuestion={};}
+  if(EMAILJS_PUBLIC_KEY!=="YOUR_PUBLIC_KEY")emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
+  sendStartNotification();
+  showScreen('screen-exam');startTimer();renderQuestion();
+}
+
+/* clear error styling on input */
+['access-code','student-name'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',()=>el.classList.remove('error'));
+});
+
+/* ══════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════ */
+let warningShown=false;
+function startTimer(){
+  warningShown=false;
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{
+    timerSeconds--;
+    updateTimerDisplay();
+    saveSession();
+    if(timerSeconds===300&&!warningShown){warningShown=true;showTimeWarning();}
+    if(timerSeconds<=0){clearInterval(timerInterval);timerSeconds=0;autoSubmit();}
+  },1000);
+}
+function showTimeWarning(){document.getElementById('time-warning-overlay').classList.remove('hidden');}
+function closeTimeWarning(){document.getElementById('time-warning-overlay').classList.add('hidden');}
+function stopTimer(){clearInterval(timerInterval);}
+function updateTimerDisplay(){
+  if(timerHidden)return;
+  const h=Math.floor(timerSeconds/3600),m=Math.floor((timerSeconds%3600)/60),s=timerSeconds%60;
+  const box=document.getElementById('timer-box');if(!box)return;
+  box.textContent=(h>0?h+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  box.classList.remove('warn','crit','ghost');
+  if(timerSeconds<=60)box.classList.add('crit');else if(timerSeconds<=300)box.classList.add('warn');
+}
+function toggleTimer(){
+  timerHidden=!timerHidden;
+  const box=document.getElementById('timer-box'),tog=document.getElementById('timer-tog');
+  if(timerHidden){box.classList.add('ghost');box.classList.remove('warn','crit');box.textContent='— : —';tog.textContent='Show';}
+  else{box.classList.remove('ghost');tog.textContent='Hide';updateTimerDisplay();}
+}
+
+/* ══════════════════════════════════════════
+   RENDER QUESTION
+══════════════════════════════════════════ */
+function trackQuestionLeave(){
+  if(questionStartTime!==null){
+    const spent=Math.round((Date.now()-questionStartTime)/1000);
+    timePerQuestion[currentIndex]=(timePerQuestion[currentIndex]||0)+spent;
+  }
+}
+function trackQuestionArrive(){
+  questionStartTime=Date.now();
+}
+function renderMath(root){
+  if(typeof katex==='undefined'||!root)return;
+  root.querySelectorAll('.math-katex').forEach(el=>{
+    katex.render(el.dataset.katex||'',el,{throwOnError:false,strict:false});
+  });
+}
+function renderQuestion(){
+  const q=questions[currentIndex];
+  document.getElementById('q-number-label').textContent=q.number;
+  document.getElementById('nav-q-cur').textContent=q.number;
+  const markBtn=document.getElementById('mark-review-btn');
+  if(markBtn){
+    markBtn.classList.toggle('marked',markedForReview.has(currentIndex));
+    const flagSVG='<svg class="bb-mark-icon" viewBox="0 0 24 24" fill="'+(markedForReview.has(currentIndex)?'currentColor':'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h12v20l-6-3-6 3V2z"/></svg>';
+    markBtn.innerHTML=flagSVG+(markedForReview.has(currentIndex)?'Marked for Review':'Mark for Review');
+  }
+  const qc=document.getElementById('question-content');
+  if(savedQHTML[currentIndex]){qc.innerHTML=savedQHTML[currentIndex];}
+  else{
+    let html='';
+    if(q.tableHTML)html+=q.tableHTML;
+    if(q.graphSVG) html+=q.graphSVG;
+    html+='<div class="q-text">'+q.text+'</div>';
+    qc.innerHTML=html;
+  }
+  renderMath(qc);resetFigures(qc);
+  renderAnswerArea();
+  const btnPrev=document.getElementById('btn-prev'),btnNext=document.getElementById('btn-next');
+  if(btnPrev)btnPrev.disabled=(currentIndex===0);
+  if(btnNext){
+    if(currentIndex===questions.length-1){btnNext.textContent='Submit';btnNext.onclick=confirmSubmit;btnNext.classList.add('last-q');}
+    else{btnNext.textContent='Next';btnNext.onclick=nextQuestion;btnNext.classList.remove('last-q');}
+  }
+  trackQuestionArrive();
+}
+
+function saveCurrentQHTML(){const qc=document.getElementById('question-content');if(qc){savedQHTML[currentIndex]=qc.innerHTML;saveSession();}}
+
+/* ══════════════════════════════════════════
+   ANSWER AREA
+══════════════════════════════════════════ */
+function renderAnswerArea(){
+  const q=questions[currentIndex];
+  const ansEl=document.getElementById('answer-area');if(!ansEl)return;
+  if(q.type==='mcq'){
+    const co=crossedOut[currentIndex]||new Set();
+    let html='<div class="bb-choices">';
+    q.choices.forEach(c=>{
+      const isSel=answers[currentIndex]===c.letter;
+      const isCrossed=co.has(c.letter);
+      const choiceCls='bb-choice'+(isSel?' sel':'')+(isCrossed?' xd':'');
+      const xbtnCls='bb-xbtn-ext'+(isCrossed?' crossed':'');
+      html+=`<div class="bb-choice-row">
+        <div class="${choiceCls}" onclick="handleChoiceClick(event,${currentIndex},'${c.letter}')">
+          <div class="bb-ch-inner">
+            <span class="bb-ch-letter">${c.letter}</span>
+            <span class="bb-ch-text">${c.html}</span>
+          </div>
+        </div>
+        <button class="${xbtnCls}" type="button"
+          onclick="toggleCrossOut(event,${currentIndex},'${c.letter}')"
+          title="${isCrossed?'Remove cross-out':'Cross out this choice'}">${c.letter}</button>
+      </div>`;
+    });
+    html+='</div>';
+    ansEl.innerHTML=html;renderMath(ansEl);
+  }else{
+    const saved=(answers[currentIndex]!==undefined)?answers[currentIndex]:'';
+    ansEl.innerHTML=`<div class="bb-open-wrap">
+      <div class="bb-open-box">
+        <input class="bb-open-input" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"
+          maxlength="6" aria-label="Your answer"
+          value="${saved.replace(/"/g,'&quot;')}"
+          oninput="handleOpenInput(this,${currentIndex})"/>
+      </div>
+      <div class="bb-ans-preview">Answer Preview: <span class="bb-ans-preview-val" id="ans-preview-val"></span></div>
+    </div>`;
+    updateAnswerPreview(saved);
+  }
+}
+
+/* ══════════════════════════════════════════
+   MCQ INTERACTIONS
+══════════════════════════════════════════ */
+function handleChoiceClick(event,idx,letter){
+  const co=crossedOut[idx]||new Set();if(co.has(letter))return;
+  if(answers[idx]===letter)delete answers[idx];else answers[idx]=letter;
+  renderAnswerArea();saveSession();
+}
+function toggleCrossOut(event,idx,letter){
+  event.stopPropagation();
+  if(!crossedOut[idx])crossedOut[idx]=new Set();
+  if(crossedOut[idx].has(letter)){crossedOut[idx].delete(letter);}
+  else{crossedOut[idx].add(letter);if(answers[idx]===letter)delete answers[idx];}
+  renderAnswerArea();saveSession();
+}
+function normalizeAnswer(val){return val.replace(/\s+/g,'');}
+/* Like Bluebook: only digits . / - ; 5 characters (6 with a leading minus). */
+function handleOpenInput(el,idx){
+  let v=el.value.replace(/[^0-9.\/-]/g,'');
+  v=v.charAt(0)+v.slice(1).replace(/-/g,'');
+  v=v.slice(0,v.charAt(0)==='-'?6:5);
+  if(v!==el.value)el.value=v;
+  saveOpenAnswer(idx,v);updateAnswerPreview(v);
+}
+function updateAnswerPreview(v){
+  const el=document.getElementById('ans-preview-val');if(!el)return;
+  v=(v||'').trim();el.textContent='';if(!v)return;
+  const m=v.match(/^(-?)(\d*\.?\d*)\/(\d*\.?\d*)$/);
+  const tex=m?(m[1]?'-':'')+'\\dfrac{'+(m[2]||'\\,')+'}{'+(m[3]||'\\,')+'}':v;
+  if(typeof katex!=='undefined'){try{katex.render(tex,el,{throwOnError:false});return;}catch(e){}}
+  el.textContent=v;
+}
+function saveOpenAnswer(idx,val){answers[idx]=val.trim();saveSession();}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function nextQuestion(){if(currentIndex<questions.length-1){trackQuestionLeave();currentIndex++;renderQuestion();}}
+function prevQuestion(){if(currentIndex>0){trackQuestionLeave();currentIndex--;renderQuestion();}}
+function jumpToQuestion(i){trackQuestionLeave();currentIndex=i;renderQuestion();}
+function toggleMarkForReview(){
+  if(markedForReview.has(currentIndex))markedForReview.delete(currentIndex);else markedForReview.add(currentIndex);
+  const btn=document.getElementById('mark-review-btn');
+  if(btn){
+    btn.classList.toggle('marked',markedForReview.has(currentIndex));
+    const flagSVG='<svg class="bb-mark-icon" viewBox="0 0 24 24" fill="'+(markedForReview.has(currentIndex)?'currentColor':'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h12v20l-6-3-6 3V2z"/></svg>';
+    btn.innerHTML=flagSVG+(markedForReview.has(currentIndex)?'Marked for Review':'Mark for Review');
+  }
+  saveSession();
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATOR
+══════════════════════════════════════════ */
+function openNavigator(){renderNavPalette();document.getElementById('nav-overlay').classList.remove('hidden');}
+function closeNavigator(){document.getElementById('nav-overlay').classList.add('hidden');}
+function renderNavPalette(){
+  const pal=document.getElementById('nav-palette');pal.innerHTML='';
+  questions.forEach((q,i)=>{
+    const btn=document.createElement('button');btn.type='button';btn.className='bb-nav-q';btn.textContent=q.number;
+    if(i===currentIndex)btn.classList.add('cur');
+    else if(answers[i]!==undefined&&answers[i]!=='')btn.classList.add('ans');
+    if(markedForReview.has(i))btn.classList.add('mrk');
+    btn.onclick=()=>{jumpToQuestion(i);closeNavigator();};pal.appendChild(btn);
+  });
+}
+
+/* ══════════════════════════════════════════
+   DIRECTIONS
+══════════════════════════════════════════ */
+function toggleCrossTool(){const s=document.getElementById('screen-exam');const off=s.classList.toggle('xo-off');document.getElementById('abc-btn').classList.toggle('active',!off);}
+function toggleMoreMenu(e){if(e)e.stopPropagation();document.getElementById('more-menu').classList.toggle('hidden');}
+function closeMoreMenu(){const m=document.getElementById('more-menu');if(m)m.classList.add('hidden');}
+document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('.bb-more-wrap'))closeMoreMenu();});
+window.addEventListener('resize',function(){const p=document.getElementById('calc-pane');if(p&&p.dataset.placed&&window.innerWidth>700&&!p.classList.contains('hidden'))placeCalculator(p,p.offsetLeft,p.offsetTop);else updateQuestionOffset();});
+
+/* ══════════════════════════════════════════
+   TEST SECURITY — silent copy/paste block
+══════════════════════════════════════════ */
+const examIntegrity={copyAttempts:0};
+function examRunning(){const s=document.getElementById('screen-exam');return !!(s&&s.classList.contains('active'))&&!submitted;}
+/* Copy/cut put NOTHING on the clipboard, so pasting anywhere gives nothing. Pasting into the test does nothing. */
+document.addEventListener('copy',function(e){if(!examRunning())return;e.preventDefault();try{e.clipboardData.setData('text/plain','');e.clipboardData.setData('text/html','');}catch(x){}examIntegrity.copyAttempts++;},true);
+document.addEventListener('cut',function(e){if(!examRunning())return;e.preventDefault();try{e.clipboardData.setData('text/plain','');e.clipboardData.setData('text/html','');}catch(x){}examIntegrity.copyAttempts++;},true);
+document.addEventListener('paste',function(e){if(examRunning())e.preventDefault();},true);
+document.addEventListener('drop',function(e){if(examRunning())e.preventDefault();},true);
+document.addEventListener('dragstart',function(e){if(examRunning())e.preventDefault();},true);
+document.addEventListener('keydown',function(e){
+  if(!examRunning())return;
+  const k=(e.key||'').toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&['s','p','u'].includes(k))e.preventDefault();
+},true);
+
+/* ── Graph viewer ── */
+const FIG_STEPS=[0.5,0.75,1,1.25,1.5,2,2.5,3];
+function figApply(fig){
+  if(!fig)return;
+  const img=fig.querySelector('img'),view=fig.querySelector('.bb-fig-view');if(!img||!img.naturalWidth)return;
+  const z=parseFloat(fig.dataset.zoom)||1,ar=img.naturalWidth/img.naturalHeight,full=fig.classList.contains('bb-fig-full');
+  let base;
+  if(full){view.style.height='';base=Math.floor(Math.min(view.clientWidth-20,(view.clientHeight-20)*ar));}
+  else{base=Math.floor(view.clientWidth-20);view.style.height=Math.ceil(base/ar+20)+'px';}
+  img.style.width=Math.round(base*z)+'px';
+  fig.querySelector('.bb-fig-pct').textContent=Math.round(z*100)+'%';
+  fig.classList.toggle('zoomed',z>1);
+  const b=fig.querySelectorAll('.bb-fig-btn');b[0].disabled=z>=FIG_STEPS[FIG_STEPS.length-1];b[1].disabled=z<=FIG_STEPS[0];
+}
+function figZoom(btn,dir){
+  const fig=btn.closest('.bb-fig'),view=fig.querySelector('.bb-fig-view'),z=parseFloat(fig.dataset.zoom)||1;
+  let i=FIG_STEPS.indexOf(z);if(i<0)i=2;i=Math.max(0,Math.min(FIG_STEPS.length-1,i+dir));
+  const cx=(view.scrollLeft+view.clientWidth/2)/view.scrollWidth,cy=(view.scrollTop+view.clientHeight/2)/view.scrollHeight;
+  fig.dataset.zoom=FIG_STEPS[i];figApply(fig);
+  view.scrollLeft=cx*view.scrollWidth-view.clientWidth/2;view.scrollTop=cy*view.scrollHeight-view.clientHeight/2;
+}
+function figReset(btn){const fig=btn.closest('.bb-fig');fig.dataset.zoom=1;figApply(fig);const v=fig.querySelector('.bb-fig-view');v.scrollLeft=0;v.scrollTop=0;}
+function figFull(btn){const fig=btn.closest('.bb-fig');fig.classList.toggle('bb-fig-full');btn.title=fig.classList.contains('bb-fig-full')?'Exit full screen':'Expand';figApply(fig);}
+function resetFigures(root){(root||document).querySelectorAll('.bb-fig').forEach(function(f){f.classList.remove('bb-fig-full','zoomed');f.dataset.zoom=1;figApply(f);});}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.bb-fig.bb-fig-full').forEach(function(f){f.classList.remove('bb-fig-full');figApply(f);});});
+window.addEventListener('resize',function(){document.querySelectorAll('.bb-fig').forEach(figApply);});
+/* drag to pan when zoomed in */
+document.addEventListener('pointerdown',function(e){
+  const view=e.target.closest&&e.target.closest('.bb-fig-view');if(!view||!view.parentElement.classList.contains('zoomed'))return;
+  e.preventDefault();const sx=e.clientX,sy=e.clientY,sl=view.scrollLeft,st=view.scrollTop;view.classList.add('panning');
+  function mv(ev){view.scrollLeft=sl-(ev.clientX-sx);view.scrollTop=st-(ev.clientY-sy);}
+  function up(){view.classList.remove('panning');document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);}
+  document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);
+});
+function openDirections(){document.getElementById('dir-overlay').classList.remove('hidden');}
+function closeDirections(){document.getElementById('dir-overlay').classList.add('hidden');}
+
+/* ══════════════════════════════════════════
+   CALCULATOR
+══════════════════════════════════════════ */
+function toggleCalculator(){
+  calcOpen=!calcOpen;
+  const pane=document.getElementById('calc-pane'),btn=document.getElementById('calc-toggle-btn'),main=document.getElementById('bb-main');
+  if(calcOpen){
+    pane.classList.remove('hidden');
+    main.classList.add('calc-open');
+    if(window.innerWidth>700&&!pane.dataset.placed){
+      const r=main.getBoundingClientRect();
+      pane.style.width=Math.min(560,Math.max(420,window.innerWidth*0.48))+'px';
+      pane.style.height=Math.max(360,r.height-20)+'px';
+      pane.style.left=(r.left+10)+'px';pane.style.top=(r.top+10)+'px';
+      pane.dataset.placed='1';
+    }
+    updateQuestionOffset();
+    btn.classList.add('active-tool');
+    if(!desmosCalc)loadDesmos();
+  }else{
+    stopCalculatorDrag();
+    stopCalculatorResize();
+    pane.classList.add('hidden');
+    main.classList.remove('calc-open');
+    btn.classList.remove('active-tool');
+    updateQuestionOffset();
+  }
+}
+function loadDesmos(){
+  initDesmos();
+}
+function initDesmos(){
+  if(desmosCalc)return;const wrap=document.getElementById('desmos-wrap');wrap.innerHTML='';
+  const frame=document.createElement('iframe');
+  frame.className='desmos-embed';
+  frame.title=calcMode==='scientific'?'Desmos Scientific Calculator':'Desmos Graphing Calculator';
+  frame.allow='clipboard-read; clipboard-write';
+  const isScientific=calcMode==='scientific';
+  const calculatorType=isScientific?'ScientificCalculator':'GraphingCalculator';
+  const calculatorOptions=isScientific
+    ?{links:false,qwertyKeyboard:true,degreeMode:false,fontSize:16,settingsMenu:true,autosize:true}
+    :{links:false,keypad:true,keypadActivated:true,qwertyKeyboard:true,expressions:true,expressionsCollapsed:false,expressionsTopbar:true,graphpaper:true,settingsMenu:true,zoomButtons:true,images:false,folders:false,notes:false,pasteGraphLink:false,fontSize:16,border:false,autosize:true};
+  const bootScript='window.addEventListener("load",function(){var host=document.getElementById("calculator");try{host.innerHTML="";var calc=Desmos.'+calculatorType+'(host,'+JSON.stringify(calculatorOptions)+');window.assessmentCalculator=calc;document.addEventListener("click",function(event){var target=event.target;var link=target.closest&&target.closest("a[href]");var branding=target.closest&&target.closest("[class*=powered-by],[class*=branding]");if(link||branding){event.preventDefault();event.stopImmediatePropagation();}},true);setTimeout(function(){if(calc.focusFirstExpression)calc.focusFirstExpression();if(calc.openKeypad)calc.openKeypad();if(calc.resize)calc.resize();setTimeout(function(){if(calc.resize)calc.resize();},180);},120);}catch(error){host.innerHTML="<div class=assessment-calc-error>Calculator could not be loaded.<br>Please check your connection.</div>";} });';
+  frame.srcdoc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body,#calculator{width:100%;height:100%;margin:0;overflow:hidden;background:#fff}.assessment-calc-loading,.assessment-calc-error{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;font:14px Arial,sans-serif;color:#666}.assessment-calc-error{color:#b91c1c}a[href],[class*=powered-by],[class*=branding]{cursor:default!important}[class*=powered-by],[class*=branding]{pointer-events:none!important}</style><\/head><body><div id="calculator"><div class="assessment-calc-loading">Loading calculator\u2026</div></div><script src="https://www.desmos.com/api/v1.12/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"><\/script><script>'+bootScript+'<\/script><\/body><\/html>';
+  wrap.appendChild(frame);
+  desmosCalc=frame;
+  updateCalculatorModeButtons();
+}
+
+function updateCalculatorModeButtons(){
+  const graphing=document.getElementById('calc-mode-graphing'),scientific=document.getElementById('calc-mode-scientific');
+  if(graphing)graphing.classList.toggle('active',calcMode==='graphing');
+  if(scientific)scientific.classList.toggle('active',calcMode==='scientific');
+}
+function switchCalculatorMode(mode,event){
+  if(event){event.stopPropagation();event.preventDefault();}
+  if(mode===calcMode)return;
+  if(desmosCalc){
+    desmosCalc.remove();
+    desmosCalc=null;
+  }
+  calcMode=mode;
+  updateCalculatorModeButtons();
+  initDesmos();
+}
+
+/* Drag the calculator by holding anywhere on its black header. */
+function startCalculatorDrag(event){
+  if(window.innerWidth<=700||event.button!==0||event.target.closest('button'))return;
+  stopCalculatorResize();
+  const pane=document.getElementById('calc-pane'),main=document.getElementById('bb-main');
+  const paneRect=pane.getBoundingClientRect();calcDragMainRect=true;
+  calcDragging=true;calcDragOffsetX=event.clientX-paneRect.left;calcDragOffsetY=event.clientY-paneRect.top;
+  calcDragCaptureEl=event.currentTarget;calcDragPointerId=event.pointerId;
+  try{calcDragCaptureEl.setPointerCapture(calcDragPointerId);}catch(e){}
+  event.preventDefault();
+  document.addEventListener('pointermove',moveCalculatorWindow);
+  document.addEventListener('pointerup',stopCalculatorDrag);
+  document.addEventListener('pointercancel',stopCalculatorDrag);
+  window.addEventListener('blur',stopCalculatorDrag);
+  document.body.style.cursor='grabbing';document.body.style.userSelect='none';
+}
+function moveCalculatorWindow(event){
+  if(!calcDragging)return;
+  const pane=document.getElementById('calc-pane');
+  placeCalculator(pane,event.clientX-calcDragOffsetX,event.clientY-calcDragOffsetY);
+}
+/* Keep at least 120px of the header on screen so it can always be grabbed again. */
+function updateQuestionOffset(){
+  const pane=document.getElementById('calc-pane'),main=document.getElementById('bb-main'),q=document.getElementById('q-pane');
+  if(!pane||!main||!q)return;
+  q.style.paddingLeft='';q.style.paddingRight='';
+  if(!calcOpen||window.innerWidth<=700||pane.classList.contains('hidden'))return;
+  const r=pane.getBoundingClientRect(),m=main.getBoundingClientRect();
+  if(r.top>m.bottom-120)return;                        /* calculator parked low: leave question alone */
+  const gap=28;
+  if(r.left+r.width/2<=m.left+m.width/2){               /* calculator on the left: move question right */
+    const off=Math.max(0,Math.min(r.right-m.left,m.width-320));
+    if(off>0)q.style.paddingLeft=(off+gap)+'px';
+  }else{                                                /* calculator on the right: move question left */
+    const off=Math.max(0,Math.min(m.right-r.left,m.width-320));
+    if(off>0)q.style.paddingRight=(off+gap)+'px';
+  }
+}
+function placeCalculator(pane,left,top){
+  const keep=120,hdr=document.querySelector('.bb-hdr'),minTop=hdr?hdr.getBoundingClientRect().bottom:0;
+  left=Math.max(keep-pane.offsetWidth,Math.min(window.innerWidth-keep,left));
+  top=Math.max(minTop,Math.min(window.innerHeight-52,top));
+  pane.style.left=left+'px';pane.style.top=top+'px';
+  updateQuestionOffset();
+}
+function stopCalculatorDrag(event){
+  if(event&&event.pointerId!==undefined&&calcDragPointerId!==null&&event.pointerId!==calcDragPointerId)return;
+  const captureEl=calcDragCaptureEl,pointerId=calcDragPointerId;
+  calcDragging=false;calcDragMainRect=null;
+  calcDragCaptureEl=null;calcDragPointerId=null;
+  document.removeEventListener('pointermove',moveCalculatorWindow);
+  document.removeEventListener('pointerup',stopCalculatorDrag);
+  document.removeEventListener('pointercancel',stopCalculatorDrag);
+  window.removeEventListener('blur',stopCalculatorDrag);
+  if(captureEl&&pointerId!==null)try{if(captureEl.hasPointerCapture(pointerId))captureEl.releasePointerCapture(pointerId);}catch(e){}
+  document.body.style.cursor='';document.body.style.userSelect='';
+}
+
+/* Resize from the lower-right corner, like the calculator in the reference. */
+function startCalculatorResize(event){
+  if(window.innerWidth<=700||event.button!==0)return;
+  stopCalculatorDrag();
+  const pane=document.getElementById('calc-pane');
+  calcWindowResizing=true;calcResizeStartX=event.clientX;calcResizeStartY=event.clientY;
+  calcResizeStartW=pane.offsetWidth;calcResizeStartH=pane.offsetHeight;
+  calcResizeCaptureEl=event.currentTarget;calcResizePointerId=event.pointerId;
+  try{calcResizeCaptureEl.setPointerCapture(calcResizePointerId);}catch(e){}
+  event.preventDefault();event.stopPropagation();
+  document.addEventListener('pointermove',resizeCalculatorWindow);
+  document.addEventListener('pointerup',stopCalculatorResize);
+  document.addEventListener('pointercancel',stopCalculatorResize);
+  window.addEventListener('blur',stopCalculatorResize);
+  document.body.style.cursor='nwse-resize';document.body.style.userSelect='none';
+}
+function resizeCalculatorWindow(event){
+  if(!calcWindowResizing)return;
+  const pane=document.getElementById('calc-pane');
+  const w=Math.max(360,Math.min(window.innerWidth,calcResizeStartW+event.clientX-calcResizeStartX));
+  const h=Math.max(360,Math.min(window.innerHeight,calcResizeStartH+event.clientY-calcResizeStartY));
+  pane.style.width=w+'px';pane.style.height=h+'px';
+  updateQuestionOffset();
+}
+function stopCalculatorResize(event){
+  if(event&&event.pointerId!==undefined&&calcResizePointerId!==null&&event.pointerId!==calcResizePointerId)return;
+  const captureEl=calcResizeCaptureEl,pointerId=calcResizePointerId;
+  calcWindowResizing=false;
+  calcResizeCaptureEl=null;calcResizePointerId=null;
+  document.removeEventListener('pointermove',resizeCalculatorWindow);
+  document.removeEventListener('pointerup',stopCalculatorResize);
+  document.removeEventListener('pointercancel',stopCalculatorResize);
+  window.removeEventListener('blur',stopCalculatorResize);
+  if(captureEl&&pointerId!==null)try{if(captureEl.hasPointerCapture(pointerId))captureEl.releasePointerCapture(pointerId);}catch(e){}
+  document.body.style.cursor='';document.body.style.userSelect='';
+}
+
+/* ══════════════════════════════════════════
+   PANE RESIZE
+══════════════════════════════════════════ */
+function startPaneResize(e){
+  e.preventDefault();paneResizing=true;paneStartX=e.clientX;
+  paneStartW=document.getElementById('calc-pane').getBoundingClientRect().width;
+  document.getElementById('pane-divider').classList.add('dragging');
+  document.addEventListener('mousemove',doPaneResize);document.addEventListener('mouseup',stopPaneResize);
+  document.body.style.cursor='col-resize';document.body.style.userSelect='none';
+}
+function doPaneResize(e){
+  if(!paneResizing)return;
+  const main=document.getElementById('bb-main'),pane=document.getElementById('calc-pane');
+  let newW=paneStartW+(e.clientX-paneStartX);
+  newW=Math.max(260,Math.min(main.getBoundingClientRect().width*0.72,newW));
+  pane.style.width=newW+'px';pane.style.minWidth='unset';pane.style.maxWidth='unset';
+}
+function stopPaneResize(){
+  paneResizing=false;document.getElementById('pane-divider').classList.remove('dragging');
+  document.removeEventListener('mousemove',doPaneResize);document.removeEventListener('mouseup',stopPaneResize);
+  document.body.style.cursor='';document.body.style.userSelect='';
+}
+
+/* ══════════════════════════════════════════
+   LOGO UPLOAD
+══════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════
+   HIGHLIGHT TOOLBAR
+══════════════════════════════════════════ */
+const hlToolbar=document.getElementById('hl-toolbar');
+let hlToolbarTimeout=null;
+
+function showHlToolbar(x,y){
+  hlToolbar.style.left=x+'px';hlToolbar.style.top=y+'px';
+  hlToolbar.classList.add('visible');
+  clearTimeout(hlToolbarTimeout);hlToolbarTimeout=setTimeout(hideHlToolbar,8000);
+}
+function hideHlToolbar(){hlToolbar.classList.remove('visible');activeRange=null;clearTimeout(hlToolbarTimeout);}
+
+document.addEventListener('mouseup',function(e){
+  if(e.target.closest('#hl-toolbar'))return;
+  const sel=window.getSelection();
+  if(!sel||sel.isCollapsed||sel.toString().trim()===''){
+    const hlSpan=e.target.closest('.hl-yellow,.hl-blue,.hl-pink,.hl-ul');
+    if(hlSpan){
+      const qc=document.getElementById('question-content');
+      if(qc&&qc.contains(hlSpan)){
+        activeRange=null;hlToolbar._hlSpan=hlSpan;
+        const rect=hlSpan.getBoundingClientRect();
+        const x=Math.max(8,Math.min(rect.left+rect.width/2-90,window.innerWidth-200));
+        const y=rect.top-52;
+        showHlToolbar(Math.max(8,x),Math.max(8,y));return;
+      }
+    }
+    if(!e.target.closest('#hl-toolbar'))hideHlToolbar();return;
+  }
+  const qc=document.getElementById('question-content');if(!qc)return;
+  const range=sel.getRangeAt(0);
+  if(!qc.contains(range.commonAncestorContainer)){hideHlToolbar();return;}
+  activeRange=range.cloneRange();hlToolbar._hlSpan=null;
+  const rect=range.getBoundingClientRect();
+  const tbW=195;
+  const x=Math.max(8,Math.min(rect.left+rect.width/2-tbW/2,window.innerWidth-tbW-8));
+  const y=rect.top-54;
+  showHlToolbar(x,Math.max(8,y));
+});
+document.addEventListener('keyup',function(){const sel=window.getSelection();if(!sel||sel.isCollapsed)hideHlToolbar();});
+
+function applyHighlight(color){
+  const classMap={yellow:'hl-yellow',blue:'hl-blue',pink:'hl-pink'};
+  const cls=classMap[color];if(!cls)return;
+  const sel=window.getSelection();
+  let r=activeRange;if(!r&&sel&&!sel.isCollapsed)r=sel.getRangeAt(0);if(!r)return;
+  wrapRange(r,cls);if(sel)sel.removeAllRanges();saveCurrentQHTML();hideHlToolbar();
+}
+function applyUnderline(){
+  const sel=window.getSelection();
+  let r=activeRange;if(!r&&sel&&!sel.isCollapsed)r=sel.getRangeAt(0);if(!r)return;
+  wrapRange(r,'hl-ul');if(sel)sel.removeAllRanges();saveCurrentQHTML();hideHlToolbar();
+}
+function wrapRange(range,className){
+  try{const span=document.createElement('span');span.className=className;range.surroundContents(span);}
+  catch(e){try{const span=document.createElement('span');span.className=className;span.appendChild(range.extractContents());range.insertNode(span);}catch(e2){}}
+}
+function removeHighlight(){
+  if(hlToolbar._hlSpan){
+    const span=hlToolbar._hlSpan,parent=span.parentNode;
+    if(parent){while(span.firstChild)parent.insertBefore(span.firstChild,span);parent.removeChild(span);parent.normalize();}
+    saveCurrentQHTML();hideHlToolbar();return;
+  }
+  const sel=window.getSelection();if(!sel||sel.isCollapsed){hideHlToolbar();return;}
+  const range=sel.getRangeAt(0);
+  const el=range.commonAncestorContainer.parentElement;
+  if(el&&['hl-yellow','hl-blue','hl-pink','hl-ul'].some(c=>el.classList.contains(c))){
+    const parent=el.parentNode;while(el.firstChild)parent.insertBefore(el.firstChild,el);parent.removeChild(el);parent.normalize();saveCurrentQHTML();
+  }
+  sel.removeAllRanges();hideHlToolbar();
+}
+
+/* ══════════════════════════════════════════
+   SUBMIT FLOW
+══════════════════════════════════════════ */
+function confirmSubmit(){
+  if(submitted)return;
+  const un=questions.filter((_,i)=>!answers[i]||answers[i]==='').length;
+  document.getElementById('modal-message').textContent=un>0?`You have ${un} unanswered question${un>1?'s':''}. Are you sure you want to submit?`:'Are you ready to submit? This action cannot be undone.';
+  const btn=document.getElementById('modal-confirm-btn');btn.textContent=un>0?'Submit Anyway':'Submit Exam';btn.onclick=finalSubmit;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.add('hidden');}
+function autoSubmit(){if(!submitted)finalSubmit();}
+function finalSubmit(){
+  if(submitted)return;submitted=true;trackQuestionLeave();closeModal();stopTimer();clearSession();
+  const endTime=new Date(),spent=EXAM_DURATION_SECONDS-timerSeconds;
+  const{earned,total}=generateResults(endTime,spent);lastEarned=earned;lastTotal=total;
+  document.getElementById('score-fraction').textContent=earned+' / '+total;
+  document.getElementById('score-pct').textContent=((earned/total)*100).toFixed(1)+'% correct';
+  document.getElementById('score-display').style.display='inline-block';
+  if(practiceMode){
+    document.getElementById('submitted-title').textContent='Re-attempt Complete';
+    document.getElementById('submitted-msg').textContent='This attempt is for your own practice only.';
+  }
+  showScreen('screen-submitted');
+}
+function resetCalculatorForNewAttempt(){
+  if(calcOpen)toggleCalculator();
+  stopCalculatorDrag();stopCalculatorResize();
+  if(desmosCalc){desmosCalc.remove();desmosCalc=null;}
+  calcMode='graphing';updateCalculatorModeButtons();
+  const pane=document.getElementById('calc-pane');
+  if(pane){delete pane.dataset.placed;pane.style.left='';pane.style.top='';pane.style.width='';pane.style.height='';}
+  const main=document.getElementById('bb-main');if(main)main.classList.remove('calc-open');
+  updateQuestionOffset();
+}
+/* Start the same exam again: fresh answers, full timer, fresh calculator, and NO emails. */
+function startReattempt(){
+  practiceMode=true;submitted=false;
+  answers={};crossedOut={};markedForReview=new Set();savedQHTML={};timePerQuestion={};questionStartTime=null;
+  examIntegrity.copyAttempts=0;currentIndex=0;timerSeconds=EXAM_DURATION_SECONDS;timerHidden=false;
+  resetCalculatorForNewAttempt();
+  const b=document.getElementById('practice-banner');if(b)b.textContent='THIS IS A RE-ATTEMPT';
+  const tb=document.getElementById('timer-box');if(tb)tb.classList.remove('ghost','warn','crit');
+  const tt=document.getElementById('timer-tog');if(tt)tt.textContent='Hide';
+  closeTimeWarning();
+  showScreen('screen-exam');stopTimer();startTimer();renderQuestion();
+}
+function fmt(s){const m=Math.floor(s/60),sec=s%60;return m+'m '+(sec<10?'0':'')+sec+'s';}
+function generateResults(endTime,spent){
+  let total=0,earned=0;
+  const qr=questions.map((q,i)=>{const sa=answers[i]||'';const ok=isAnswerCorrect(q,sa,_answers[i]);total+=q.points;if(ok)earned+=q.points;const secs=timePerQuestion[i]||0;return{questionNumber:q.number,type:q.type,pointValue:q.points,studentAnswer:sa,correct:ok,timeSpent:fmt(secs)};});
+  const jsonData={examTitle:EXAM_TITLE,studentName,integrity:examIntegrity,submissionDate:endTime.toLocaleDateString(),submissionTime:endTime.toLocaleTimeString(),totalTimeSpent:fmt(spent),score:{earned,total,percentage:((earned/total)*100).toFixed(1)+'%'},questions:qr};
+  sendResultsByEmail(jsonData,earned,total);return{earned,total};
+}
+function sendResultsByEmail(jsonData,earned,total){
+  const el=document.getElementById('email-status');
+  if(practiceMode){el.className='email-status';el.textContent='';return;}
+  if(EMAILJS_PUBLIC_KEY==="YOUR_PUBLIC_KEY"){el.className='email-status failed';el.textContent='EmailJS not configured.';return;}
+  el.className='email-status sending';el.textContent='Sending results to teacher\u2026';
+  const SECRET="LEVAL2025",ts=Date.now(),token=btoa(SECRET+"|"+studentName+"|"+ts).slice(0,20);
+  emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:RECIPIENT_EMAIL,subject:'[VERIFIED] '+EXAM_TITLE+' \u2014 '+studentName+' ('+earned+'/'+total+')',student_name:studentName,score:earned+' / '+total+' ('+((earned/total)*100).toFixed(1)+'%)',exam_date:jsonData.submissionDate+' at '+jsonData.submissionTime,time_spent:jsonData.totalTimeSpent,results_json:JSON.stringify(jsonData,null,2),verification:'Token: '+token+' | Starts with: '+SECRET.slice(0,3)+'***'})
+    .then(()=>{el.className='email-status sent';el.textContent='Results emailed to '+RECIPIENT_EMAIL;})
+    .catch(err=>{el.className='email-status failed';el.textContent='Email failed: '+(err.text||err);});
+}
+
+/* ══════════════════════════════════════════
+   REVIEW
+══════════════════════════════════════════ */
+function showReview(){
+  const body=document.getElementById('review-body');body.innerHTML='';
+  document.getElementById('review-score-pill').textContent=lastEarned+' / '+lastTotal+' correct';
+  questions.forEach((q,i)=>{
+    const sa=(answers[i]||'').trim(),ca=_answers[i].trim();
+    const isCorrect=isAnswerCorrect(q,sa,ca),isSkipped=sa==='';
+    let badgeClass,badgeText;
+    if(isSkipped){badgeClass='skipped';badgeText='Not Answered';}else if(isCorrect){badgeClass='correct';badgeText='Correct';}else{badgeClass='wrong';badgeText='Incorrect';}
+    let qHtml='';
+    if(q.tableHTML)qHtml+=q.tableHTML;if(q.graphSVG)qHtml+=q.graphSVG;qHtml+='<div>'+q.text+'</div>';
+    let ansHtml='<div class="review-answers">';
+    if(q.type==='mcq'){
+      if(!isSkipped){const chosen=q.choices.find(c=>c.letter===sa);ansHtml+=`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon">${isCorrect?'✓':'✗'}</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}${chosen?' \u2014 '+chosen.html:''}</span></div>`;}
+      else{ansHtml+=`<div class="review-answer-row skipped-row"><span class="review-ans-icon">–</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--ink-4)">Not answered</span></div>`;}
+      if(!isCorrect){const correct=q.choices.find(c=>c.letter===ca);ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon">→</span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca.split('|')[0]}${correct?' \u2014 '+correct.html:''}</span></div>`;}
+    }else{
+      ansHtml+=!isSkipped?`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon">${isCorrect?'✓':'✗'}</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}</span></div>`:`<div class="review-answer-row skipped-row"><span class="review-ans-icon">–</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--ink-4)">Not answered</span></div>`;
+      if(!isCorrect)ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon">→</span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca.split('|').join(' or ')}</span></div>`;
+    }
+    ansHtml+='</div>';
+    const card=document.createElement('div');card.className='review-card';
+    card.innerHTML=`<div class="review-card-header"><span class="review-q-num">Question ${q.number}</span><span class="review-badge ${badgeClass}">${badgeText}</span></div><div class="review-card-body">${qHtml}${ansHtml}</div>`;
+    body.appendChild(card);
+  });
+  renderMath(body);
+  showScreen('screen-review');
+}
+
+
+/* ══════════════════════════════════════════
+   REFERENCE SHEET
+══════════════════════════════════════════ */
+function openReference(){document.getElementById('ref-overlay').classList.remove('hidden');}
+function closeReference(){document.getElementById('ref-overlay').classList.add('hidden');}
+/* ══════════════════════════════════════════
+   BACKDROP CLICKS
+══════════════════════════════════════════ */
+document.getElementById('nav-overlay').addEventListener('click',function(e){if(e.target===this)closeNavigator();});
+document.getElementById('ref-overlay').addEventListener('click',function(e){if(e.target===this)closeReference();});
+document.getElementById('dir-overlay').addEventListener('click',function(e){if(e.target===this)closeDirections();});
+document.getElementById('hl-toolbar').addEventListener('mousedown',e=>e.stopPropagation());
+</script>
+</body>
+</html>
